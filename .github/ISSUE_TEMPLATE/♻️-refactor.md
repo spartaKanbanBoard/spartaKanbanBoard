@@ -1,7 +1,7 @@
 ---
 name: "♻️ refactor"
 about: 리팩토링에 대한 이슈에요
-title: ''
+title: '♻️ [refactor] '
 labels: ''
 assignees: ''
 
