@@ -1,7 +1,7 @@
 package com.sparta.spartakanbanboard.domain.card.entity;
 
-import com.sparta.spartakanbanboard.domain.card.dto.CardCreateRequestDto;
-import com.sparta.spartakanbanboard.domain.progress.entity.Progress;
+import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
+import com.sparta.spartakanbanboard.domain.kanbanColumn.entity.KanbanColumn;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.global.entity.TimeStamped;
 import jakarta.persistence.*;
@@ -36,13 +36,12 @@ public class Card extends TimeStamped {
     @Column
     private String writer;
 
-
-    public static Card of(CardCreateRequestDto cardCreateRequestDto) {
+    public static Card of(CreateCardRequestDto requestDto) {
         return Card.builder()
-            .title(cardCreateRequestDto.getTitle())
-            .content(cardCreateRequestDto.getContent())
+            .title(requestDto.getTitle())
+            .content(requestDto.getContent())
             .status(State.BEFORE)
-            .writer(cardCreateRequestDto.getWriter())
+            .writer(requestDto.getWriter())
             .build();
     }
 
@@ -54,5 +53,5 @@ public class Card extends TimeStamped {
 
     @ManyToOne
     @JoinColumn(name = "progress_id")
-    Progress progress;
+    KanbanColumn kanbanColumn;
 }
