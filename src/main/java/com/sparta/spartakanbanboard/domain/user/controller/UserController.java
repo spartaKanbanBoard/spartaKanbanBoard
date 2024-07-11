@@ -46,10 +46,4 @@ public class UserController {
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @GetMapping()
-    public String getRefreshToken(@RequestBody String userName) {
-        String refreshToken = userService.getRefreshToken(userName);
-        return refreshToken;
-    }
-
 }
