@@ -1,8 +1,12 @@
 package com.sparta.spartakanbanboard.domain.column.entity;
 
 import com.sparta.spartakanbanboard.domain.board.entity.Board;
+import com.sparta.spartakanbanboard.domain.card.entity.Card;
 import com.sparta.spartakanbanboard.domain.column.dto.ColumnResponseDto;
+import com.sparta.spartakanbanboard.domain.user.entity.User;
 import jakarta.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,8 +32,8 @@ public class KanbanColumn {
     @ManyToOne
     private Board board;
 
-//    @OneToMany(mappedBy = "kanban_column")
-//    private final List<Card> cardList = new ArrayList<>();
+    @OneToMany(mappedBy = "kanbanColumn", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Card> cardList = new LinkedHashSet<>();
 
     public static ColumnResponseDto of (KanbanColumn kanbanColumn) {
         return ColumnResponseDto.builder()
@@ -37,4 +41,7 @@ public class KanbanColumn {
             .build();
     }
 
+    public void addCard(Card card) {
+        cardList.add(card);
+    }
 }
