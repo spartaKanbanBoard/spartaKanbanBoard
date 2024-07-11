@@ -4,4 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class ColumnRequestDto {
+
+    private String columnTitle;
 }

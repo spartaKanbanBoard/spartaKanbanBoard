@@ -34,4 +34,16 @@ public class User {
 
     @Column
     private String refreshToken;
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void login() {
+        this.userStatus = UserStatus.ACTIVE;
+    }
+
+    public void logout() {
+        this.userStatus = UserStatus.LOGOUT;
+    }
 }
