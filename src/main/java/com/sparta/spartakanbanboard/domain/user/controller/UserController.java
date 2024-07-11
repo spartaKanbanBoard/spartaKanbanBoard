@@ -5,6 +5,7 @@ import com.sparta.spartakanbanboard.domain.user.dto.SignupRequestDto;
 import com.sparta.spartakanbanboard.domain.user.service.UserService;
 import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
 import com.sparta.spartakanbanboard.global.security.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseEntity<CommonResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto,
+                                                   HttpServletResponse response) {
         CommonResponseDto responseDto = userService.login(loginRequestDto, response);
         return ResponseEntity.ok().body(responseDto);
     }
@@ -34,6 +36,13 @@ public class UserController {
     @DeleteMapping("/logout")
     public ResponseEntity<CommonResponseDto> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         CommonResponseDto responseDto = userService.logout(userDetails.getUser());
+        return ResponseEntity.ok().body(responseDto);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<CommonResponseDto> refresh(HttpServletRequest request,
+                                                     HttpServletResponse response) {
+        CommonResponseDto responseDto = userService.refresh(request,response);
         return ResponseEntity.ok().body(responseDto);
     }
 
