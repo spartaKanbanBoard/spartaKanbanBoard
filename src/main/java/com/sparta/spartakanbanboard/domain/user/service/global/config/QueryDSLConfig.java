@@ -1,4 +1,4 @@
-package com.sparta.spartakanbanboard.global.config;
+package com.sparta.spartakanbanboard.domain.user.service.global.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

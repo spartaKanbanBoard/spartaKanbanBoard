@@ -9,7 +9,7 @@ import com.sparta.spartakanbanboard.domain.board.repository.UserBoardMatcherRepo
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.domain.user.entity.UserRole;
 import com.sparta.spartakanbanboard.domain.user.service.UserService;
-import com.sparta.spartakanbanboard.global.BusinessLogicException;
+import com.sparta.spartakanbanboard.domain.user.service.global.BusinessLogicException;
 import com.sparta.spartakanbanboard.global.dto.PageDto;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
