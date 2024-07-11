@@ -38,13 +38,13 @@ public class Board extends TimeStamped {
     @Column(name = "board_info", nullable = false)
     private String boardInfo;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Singular("userList")
-    private List<User> userList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Singular("kanbanColumn")
-    private List<KanbanColumn> kanbanColumn = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @Singular("userList")
+//    private List<User> userList = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @Singular("kanbanColumn")
+//    private List<KanbanColumn> kanbanColumn = new ArrayList<>();
 
     public static Board of(BoardCreateRequestDto boardRequestDto) {
         return Board.builder()
