@@ -4,12 +4,12 @@ import lombok.Getter;
 
 @Getter
 public class CommonResponseDto<T> {
-    private int code;
+    private String msg;
     private T data;
 
     @Builder
-    public CommonResponseDto(int code, T data){
-        this.code = code;
+    public CommonResponseDto(String msg, T data){
+        this.msg = msg;
         this.data = data;
     }
 
