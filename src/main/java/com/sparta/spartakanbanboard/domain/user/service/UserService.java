@@ -25,6 +25,7 @@ public class UserService {
     @Value("${ADMIN_TOKEN}")
     String adminToken;
 
+    //회원가입
     public CommonResponseDto signup(SignupRequestDto signupRequestDto) {
         String userName = signupRequestDto.getUserName();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
@@ -56,6 +57,7 @@ public class UserService {
                 .build();
     }
 
+    //로그인
     public CommonResponseDto login(LoginRequestDto requestDto, HttpServletResponse response) {
         User user = userRepository.findByUserName(requestDto.getUserName())
                 .orElseThrow(() -> new BusinessLogicException("사용자를 찾을 수 없습니다."));
@@ -77,8 +79,19 @@ public class UserService {
         jwtUtil.addJwtToHeader(JwtUtil.REFRESH_HEADER, refreshToken, response);
 
         return CommonResponseDto.builder()
-                .msg("로그인 되었습니다")
+                .msg("로그인 되었습니다.")
                 .data(accessToken)
+                .build();
+    }
+
+    //로그아웃
+    public CommonResponseDto logout(User user) {
+        user.logout();
+        user.updateRefreshToken(null);
+        userRepository.save(user);
+
+        return CommonResponseDto.builder()
+                .msg("로그아웃 되었습니다.")
                 .build();
     }
 
