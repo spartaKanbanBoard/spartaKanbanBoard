@@ -52,7 +52,7 @@ public class BoardRepositoryQueryImpl implements BoardRepositoryQuery {
 
         List<Board> boards = jpaQueryFactory
             .selectFrom(board)
-            .leftJoin(userBoardMatcher)
+            .leftJoin(userBoardMatcher).on(board.id.eq(userBoardMatcher.board.id))
             .where(userBoardMatcher.user.id.eq(user.getId()))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize()+1)
