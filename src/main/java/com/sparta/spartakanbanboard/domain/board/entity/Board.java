@@ -24,7 +24,7 @@ import lombok.Singular;
 @Builder
 @Entity
 @Table(name = "db_board")
-public class Board {
+public class Board extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +39,10 @@ public class Board {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Singular("userList")
     private List<User> userList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Singular("kanbanColumn")
+    private List<KanbanColumn> kanbanColumn = new ArrayList<>();
 
     public static Board of(BoardCreateRequestDto boardRequestDto) {
         return Board.builder()

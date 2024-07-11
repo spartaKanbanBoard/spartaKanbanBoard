@@ -24,8 +24,8 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping("/admins/boards")
-    public ResponseEntity<?> createBoard(
-        @AuthenticationPrincipal userDetailsImpl,
+    public ResponseEntity<CommonResponseDto<BoardCreateResponseDto>> createBoard(
+        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
         @Valid @RequestBody BoardCreateRequestDto boardRequestDto) {
 
         User user = userDetailsImpl.getUser();
