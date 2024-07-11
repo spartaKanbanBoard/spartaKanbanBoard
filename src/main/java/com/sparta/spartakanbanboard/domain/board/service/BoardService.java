@@ -81,6 +81,15 @@ public class BoardService {
         return BoardResponseDto.of(board);
     }
 
+    public void deleteBoard(User user, long boardId) {
+        User curUser = userService.findByUserId(user.getId());
+
+        checkADMINUser(curUser);
+        Board board = findById(boardId);
+
+        boardRepository.delete(board);
+    }
+
     public Board findById(long id) {
         Board board= boardRepository.findById(id).orElseThrow(
             () -> new NoSuchElementException("일치하는 보드가 없습니다.")

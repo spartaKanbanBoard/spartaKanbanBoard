@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +49,7 @@ public class BoardController {
     public ResponseEntity<CommonResponseDto<Slice<Board>>> getBoardList
         (
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam(value = "page",defaultValue = "1") int page,
             @RequestParam("size") int size,
             @RequestParam(value = "sortBy",defaultValue = "createdAt") String sortBy
             ) {
@@ -68,7 +69,7 @@ public class BoardController {
     public ResponseEntity<CommonResponseDto<Slice<Board>>> getMyBoardList
         (
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam(value = "page",defaultValue = "1") int page,
             @RequestParam("size") int size,
             @RequestParam(value = "sortBy",defaultValue = "createdAt") String sortBy
         ) {
@@ -98,6 +99,20 @@ public class BoardController {
             .build();
 
         return ResponseEntity.ok().body(commonResponseDto);
+    }
 
+    @DeleteMapping("/admins/boards/{boardId}")
+    public ResponseEntity<CommonResponseDto> deleteBoard(
+        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+        @PathVariable("boardId") long boardId
+    ) {
+        User user = userDetailsImpl.getUser();
+        boardService.deleteBoard(user, boardId);
+
+        CommonResponseDto commonResponseDto = CommonResponseDto.builder()
+            .msg("보드 삭제 완료 !")
+            .build();
+
+        return ResponseEntity.ok().body(commonResponseDto);
     }
 }
