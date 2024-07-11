@@ -1,6 +1,6 @@
-package com.sparta.spartakanbanboard.domain.column.controller;
+package com.sparta.spartakanbanboard.domain.progress.controller;
 
-import com.sparta.spartakanbanboard.domain.column.service.ColumnService;
+import com.sparta.spartakanbanboard.domain.progress.service.ProgressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-public class ColumnController {
+public class ProgressController {
 
-    private final ColumnService columnService;
+    private final ProgressService progressService;
 }

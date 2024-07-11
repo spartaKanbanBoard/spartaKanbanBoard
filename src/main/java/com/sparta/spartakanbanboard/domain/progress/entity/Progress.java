@@ -1,4 +1,4 @@
-package com.sparta.spartakanbanboard.domain.column.entity;
+package com.sparta.spartakanbanboard.domain.progress.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table
-public class Column {
+public class Progress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,4 +1,4 @@
-package com.sparta.spartakanbanboard.domain.user.dto;
+package com.sparta.spartakanbanboard.domain.user.repository.dto;
 
 import lombok.Getter;
 
