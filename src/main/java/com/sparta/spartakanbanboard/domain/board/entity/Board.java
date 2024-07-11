@@ -1,9 +1,7 @@
 package com.sparta.spartakanbanboard.domain.board.entity;
 
-import com.sparta.spartakanbanboard.domain.board.dto.BoardCreateRequestDto;
-import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
-import com.sparta.spartakanbanboard.domain.user.entity.User;
-import com.sparta.spartakanbanboard.global.entity.TimeStamped;
+import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
+import com.sparta.spartakanbanboard.domain.user.service.global.entity.TimeStamped;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,19 +36,24 @@ public class Board extends TimeStamped {
     @Column(name = "board_info", nullable = false)
     private String boardInfo;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Singular("userList")
-    private List<User> userList = new ArrayList<>();
-
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Singular("kanbanColumn")
-    private List<KanbanColumn> kanbanColumn = new ArrayList<>();
+    @Singular("userBoardMatchersList")
+    private List<UserBoardMatcher> userBoardMatchersList = new ArrayList<>();
 
-    public static Board of(BoardCreateRequestDto boardRequestDto) {
+//    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @Singular("kanbanColumn")
+//    private List<KanbanColumn> kanbanColumn = new ArrayList<>();
+
+    public static Board of(BoardRequestDto boardRequestDto) {
         return Board.builder()
             .title(boardRequestDto.getTitle())
             .boardInfo(boardRequestDto.getBoardInfo())
             .build();
+    }
+
+    public void update(BoardRequestDto boardRequestDto) {
+        this.title = boardRequestDto.getTitle();
+        this.boardInfo = boardRequestDto.getBoardInfo();
     }
 
 }
