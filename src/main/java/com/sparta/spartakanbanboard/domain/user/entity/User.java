@@ -1,6 +1,9 @@
 package com.sparta.spartakanbanboard.domain.user.entity;
 
+import com.sparta.spartakanbanboard.domain.card.entity.Card;
 import jakarta.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,4 +49,7 @@ public class User {
     public void logout() {
         this.userStatus = UserStatus.LOGOUT;
     }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Card> cardList = new LinkedHashSet<>();
 }

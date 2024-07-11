@@ -1,12 +1,11 @@
 package com.sparta.spartakanbanboard.domain.card.service;
 
-import com.sparta.spartakanbanboard.domain.card.repository.CardRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
+import com.sparta.spartakanbanboard.domain.user.service.global.dto.CommonResponseDto;
 
-@Service
-@RequiredArgsConstructor
-public class CardService {
+public interface CardService {
 
-    private final CardRepository cardRepository;
+    CommonResponseDto<?> createCardAtKanbanColumn(Long kanbanColumnId, CreateCardRequestDto requestDto);
+
+    CommonResponseDto<?> findKanbanColumnIdAllCards(Long kanbanColumnId);
 }
