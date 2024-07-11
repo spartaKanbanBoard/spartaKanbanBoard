@@ -39,9 +39,9 @@ public class Board extends TimeStamped {
     private String boardInfo;
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @Singular("userList")
-//    private List<User> userList = new ArrayList<>();
-//
+//    @Singular("userBoardMatchersList")
+//    private List<UserBoardMatcher> userBoardMatchersList = new ArrayList<>();
+
 //    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
 //    @Singular("kanbanColumn")
 //    private List<KanbanColumn> kanbanColumn = new ArrayList<>();

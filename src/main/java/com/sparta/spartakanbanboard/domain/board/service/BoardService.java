@@ -9,8 +9,10 @@ import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.domain.user.entity.UserRole;
 import com.sparta.spartakanbanboard.domain.user.service.UserService;
 import com.sparta.spartakanbanboard.global.BusinessLogicException;
+import com.sparta.spartakanbanboard.global.dto.PageDto;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,6 +31,33 @@ public class BoardService {
         boardRepository.save(board);
 
         return BoardCreateResponseDto.of(board);
+    }
+
+    public Slice<Board> getBoardList(User user, int page, int size, String sortBy) {
+        User curUser = userService.findByUserId(user.getId());
+
+        checkADMINUser(curUser);
+
+        PageDto pageDto = PageDto.builder()
+            .currentPage(page)
+            .size(size)
+            .sortBy(sortBy)
+            .build();
+
+        return boardRepository.searchAllBoard(pageDto.toPageable());
+
+    }
+
+    public Slice<Board> getMyBoardList(User user, int page, int size, String sortBy) {
+        User curUser = userService.findByUserId(user.getId());
+
+        PageDto pageDto = PageDto.builder()
+            .currentPage(page)
+            .size(size)
+            .sortBy(sortBy)
+            .build();
+
+        return boardRepository.searchMyBoard(curUser, pageDto.toPageable());
     }
 
     public Board findById(long id) {
