@@ -1,16 +1,15 @@
 package com.sparta.spartakanbanboard.global.dto;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 @Getter
-public class CommonResDto<T> {
-    private int code;
+public class CommonResponseDto<T> {
+    private String msg;
     private T data;
 
     @Builder
-    public CommonResDto(int code, T data){
-        this.code = code;
+    public CommonResponseDto(String msg, T data){
+        this.msg = msg;
         this.data = data;
     }
 
