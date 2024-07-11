@@ -1,14 +1,12 @@
 package com.sparta.spartakanbanboard.domain.board.contoroller;
 
-import com.sparta.spartakanbanboard.domain.board.dto.BoardCreateRequestDto;
-import com.sparta.spartakanbanboard.domain.board.dto.BoardCreateResponseDto;
-import com.sparta.spartakanbanboard.domain.board.dto.BoardListResponseDto;
+import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
+import com.sparta.spartakanbanboard.domain.board.dto.BoardResponseDto;
 import com.sparta.spartakanbanboard.domain.board.entity.Board;
 import com.sparta.spartakanbanboard.domain.board.service.BoardService;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
 import com.sparta.spartakanbanboard.global.security.UserDetailsImpl;
-import com.sparta.spartakanbanboard.global.security.UserDetailsServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -17,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,12 +29,12 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping("/admins/boards")
-    public ResponseEntity<CommonResponseDto<BoardCreateResponseDto>> createBoard(
+    public ResponseEntity<CommonResponseDto<BoardResponseDto>> createBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-        @Valid @RequestBody BoardCreateRequestDto boardRequestDto) {
+        @Valid @RequestBody BoardRequestDto boardRequestDto) {
 
         User user = userDetailsImpl.getUser();
-        BoardCreateResponseDto boardResponseDto = boardService.createBoard(user, boardRequestDto);
+        BoardResponseDto boardResponseDto = boardService.createBoard(user, boardRequestDto);
 
         CommonResponseDto commonResponseDto = CommonResponseDto.builder()
             .data(boardResponseDto)
@@ -82,5 +81,23 @@ public class BoardController {
             .build();
 
         return ResponseEntity.ok().body(commonResponseDto);
+    }
+
+    @PutMapping("/admins/boards/{boardId}")
+    public ResponseEntity<CommonResponseDto<BoardResponseDto>> updateBoard(
+        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+        @PathVariable("boardId") long boardId,
+        @RequestBody BoardRequestDto boardRequestDto
+    ) {
+        User user = userDetailsImpl.getUser();
+        BoardResponseDto boardResponseDto = boardService.updateBoard(user, boardRequestDto, boardId);
+
+        CommonResponseDto commonResponseDto = CommonResponseDto.builder()
+            .data(boardResponseDto)
+            .msg("보드 수정 완료 !")
+            .build();
+
+        return ResponseEntity.ok().body(commonResponseDto);
+
     }
 }
