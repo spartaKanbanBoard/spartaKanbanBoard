@@ -44,8 +44,20 @@ public class BoardService {
             .sortBy(sortBy)
             .build();
 
-        return boardRepository.search(pageDto.toPageable());
+        return boardRepository.searchAllBoard(pageDto.toPageable());
 
+    }
+
+    public Slice<Board> getMyBoardList(User user, int page, int size, String sortBy) {
+        User curUser = userService.findByUserId(user.getId());
+
+        PageDto pageDto = PageDto.builder()
+            .currentPage(page)
+            .size(size)
+            .sortBy(sortBy)
+            .build();
+
+        return boardRepository.searchMyBoard(curUser, pageDto.toPageable());
     }
 
     public Board findById(long id) {

@@ -46,7 +46,7 @@ public class BoardController {
     }
 
     @GetMapping("/admins/boards")
-    public ResponseEntity<CommonResponseDto<BoardCreateResponseDto>> getBoardList
+    public ResponseEntity<CommonResponseDto<Slice<Board>>> getBoardList
         (
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
             @RequestParam(value = "page",defaultValue = "0") int page,
@@ -60,6 +60,25 @@ public class BoardController {
         CommonResponseDto commonResponseDto = CommonResponseDto.builder()
             .data(boards)
             .msg("보드 조회 완료 !")
+            .build();
+
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
+
+    @GetMapping("/boards")
+    public ResponseEntity<CommonResponseDto<Slice<Board>>> getMyBoardList
+        (
+            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam("size") int size,
+            @RequestParam(value = "sortBy",defaultValue = "createdAt") String sortBy
+        ) {
+        User user = userDetailsImpl.getUser();
+        Slice<Board> boards = boardService.getMyBoardList(user, page, size, sortBy);
+
+        CommonResponseDto commonResponseDto = CommonResponseDto.builder()
+            .data(boards)
+            .msg(user.getUserName() + "님의 보드 조회 완료 !")
             .build();
 
         return ResponseEntity.ok().body(commonResponseDto);
