@@ -6,6 +6,7 @@ import com.sparta.spartakanbanboard.domain.board.dto.BoardListResponseDto;
 import com.sparta.spartakanbanboard.domain.board.service.BoardService;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
+import com.sparta.spartakanbanboard.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

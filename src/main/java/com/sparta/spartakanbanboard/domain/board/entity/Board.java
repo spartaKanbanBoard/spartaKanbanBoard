@@ -1,7 +1,9 @@
 package com.sparta.spartakanbanboard.domain.board.entity;
 
 import com.sparta.spartakanbanboard.domain.board.dto.BoardCreateRequestDto;
+import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
+import com.sparta.spartakanbanboard.global.entity.TimeStamped;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +26,7 @@ import lombok.Singular;
 @Builder
 @Entity
 @Table(name = "db_board")
-public class Board extends Timestamped{
+public class Board extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
