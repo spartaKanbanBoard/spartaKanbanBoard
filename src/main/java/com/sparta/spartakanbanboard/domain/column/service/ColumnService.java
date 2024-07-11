@@ -5,7 +5,7 @@ import com.sparta.spartakanbanboard.domain.column.dto.ColumnRequestDto;
 import com.sparta.spartakanbanboard.domain.column.dto.ColumnResponseDto;
 import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
 import com.sparta.spartakanbanboard.domain.column.repository.ColumnRepository;
-import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
+import com.sparta.spartakanbanboard.domain.user.service.global.dto.CommonResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

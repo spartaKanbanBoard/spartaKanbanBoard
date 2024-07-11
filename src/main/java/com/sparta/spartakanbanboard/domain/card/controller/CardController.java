@@ -15,23 +15,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/columns/{kanbanColumnId}/cards")
 @RequiredArgsConstructor
 public class CardController {
 
     private final CardServiceImpl cardService;
 
-
     @PostMapping
-    public ResponseEntity<CommonResponseDto> createCard(
-        @PathVariable @Valid Long column_id,
-        @RequestBody @Valid CreateCardRequestDto requestDto,
-        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<CommonResponseDto<Object>> createCard(
+        @PathVariable @Valid Long kanbanColumnId,
+        @RequestBody CreateCardRequestDto requestDto) {
 
-        CommonResponseDto commonResponseDto = cardService.createCard(column_id, requestDto, userDetails);
-
+        CommonResponseDto<Object> commonResponseDto = cardService.createCard(kanbanColumnId, requestDto);
         return ResponseEntity.ok().body(commonResponseDto);
     }
+
+//    //전체조회
+//    @GetMapping
+//    public ResponseEntity<CommonResponseDto> getAllCard(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//
+//        CommonResponseDto<List<CardResponseDto>> cardResponseDtoList = cardService.getAllCard(userDetails);
+//
+//        return ResponseEntity.ok().body(cardResponseDtoList);
+//    }
 
 
 

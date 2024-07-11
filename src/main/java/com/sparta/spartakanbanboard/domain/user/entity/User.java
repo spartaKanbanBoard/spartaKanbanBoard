@@ -50,7 +50,6 @@ public class User {
         this.userStatus = UserStatus.LOGOUT;
     }
 
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Card> cardList = new LinkedHashSet<>();
 }
