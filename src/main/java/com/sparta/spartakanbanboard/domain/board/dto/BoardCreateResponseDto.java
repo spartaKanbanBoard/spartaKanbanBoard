@@ -6,12 +6,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class BoardResponseDto {
+public class BoardCreateResponseDto {
     private String title;
     private String boardInfo;
 
-    public static BoardResponseDto of(Board board) {
-        return BoardResponseDto.builder()
+    public static BoardCreateResponseDto of(Board board) {
+        return BoardCreateResponseDto.builder()
             .title(board.getTitle())
             .boardInfo(board.getBoardInfo())
             .build();

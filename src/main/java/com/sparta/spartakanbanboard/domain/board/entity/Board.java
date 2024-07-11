@@ -1,11 +1,10 @@
 package com.sparta.spartakanbanboard.domain.board.entity;
 
-import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
+import com.sparta.spartakanbanboard.domain.board.dto.BoardCreateRequestDto;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
@@ -42,7 +40,7 @@ public class Board {
     @Singular("userList")
     private List<User> userList = new ArrayList<>();
 
-    public static Board of(BoardRequestDto boardRequestDto) {
+    public static Board of(BoardCreateRequestDto boardRequestDto) {
         return Board.builder()
             .title(boardRequestDto.getTitle())
             .boardInfo(boardRequestDto.getBoardInfo())
