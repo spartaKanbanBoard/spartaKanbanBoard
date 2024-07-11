@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table
-public class Column {
+public class KanbanColumn {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
