@@ -21,8 +21,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<CommonResponseDto> signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
-
         CommonResponseDto responseDto = userService.signup(signupRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        return ResponseEntity.ok().body(responseDto);
     }
 }
