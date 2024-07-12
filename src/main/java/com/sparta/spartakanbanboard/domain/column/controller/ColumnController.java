@@ -34,7 +34,7 @@ public class ColumnController {
         return ResponseEntity.ok().body(commonResponseDto);
     }
 
-    @PutMapping("admins/boards/{boardId}/columns/")
+    @PutMapping("admins/boards/{boardId}/columns")
     public ResponseEntity<CommonResponseDto> moveColumn(
         @PathVariable long boardId,
         @RequestParam("baseColumn") long baseId,
