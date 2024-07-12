@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class CreateCardRequestDto {
 
-    private Long writerId;
+    private String username;
 
     @NotBlank
     private String title;
