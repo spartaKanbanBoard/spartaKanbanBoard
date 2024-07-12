@@ -1,5 +1,6 @@
 package com.sparta.spartakanbanboard.domain.column.service;
 
+import com.sparta.spartakanbanboard.domain.board.entity.Board;
 import com.sparta.spartakanbanboard.domain.board.service.BoardService;
 import com.sparta.spartakanbanboard.domain.column.dto.ColumnRequestDto;
 import com.sparta.spartakanbanboard.domain.column.dto.ColumnResponseDto;
@@ -18,23 +19,35 @@ public class ColumnService {
 
     public CommonResponseDto createColumn(long bordId, ColumnRequestDto requestDto) {
 
-        //Board board = boardService.findById(bordId);
+        Board board = boardService.findById(bordId);
         KanbanColumn kanbanColumn = KanbanColumn.builder()
             .columnTitle(requestDto.getColumnTitle())
-            //.board(board)
+            .board(board)
             .build();
 
         columnRepository.save(kanbanColumn);
         ColumnResponseDto responseDto = KanbanColumn.of(kanbanColumn);
 
         return CommonResponseDto.builder()
-            .msg("성공적으로 컬럼이 생성되었습니다")
-            .data(responseDto)
+            .msg(requestDto.getColumnTitle() + "컬럼이 성공적으로 생성되었습니다")
             .build();
     }
 
+    public CommonResponseDto deleteColumn(long boardId, long columnsId) {
 
-    public KanbanColumn findbyId(long id){
-        return columnRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("잘못된 ID입니다"));
+        KanbanColumn kanbanColumn = findById(columnsId);
+
+        columnRepository.delete(kanbanColumn);
+
+        return CommonResponseDto.builder()
+            .msg(kanbanColumn.getColumnTitle() + "성공적으로 컬럼이 삭제되었습니다")
+            .build();
+    }
+
+    public KanbanColumn findById(long id){
+        return columnRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 컬럼이 존재하지 않습니다!"));
     }
 }
+
+
+
