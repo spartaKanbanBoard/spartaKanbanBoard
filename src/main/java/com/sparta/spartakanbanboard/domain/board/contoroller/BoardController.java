@@ -1,5 +1,7 @@
 package com.sparta.spartakanbanboard.domain.board.contoroller;
 
+import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteRequestDto;
+import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardResponseDto;
 import com.sparta.spartakanbanboard.domain.board.entity.Board;
@@ -8,6 +10,7 @@ import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.domain.user.service.global.dto.CommonResponseDto;
 import com.sparta.spartakanbanboard.domain.user.service.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
@@ -111,6 +114,23 @@ public class BoardController {
 
         CommonResponseDto commonResponseDto = CommonResponseDto.builder()
             .msg("보드 삭제 완료 !")
+            .build();
+
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
+
+    @PostMapping("/admins/boards/{boardId}")
+    public ResponseEntity<CommonResponseDto<List<BoardInviteRequestDto>>> inviteUserToBoard(
+        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+        @PathVariable("boardId") long boardId,
+        @RequestBody List<BoardInviteRequestDto> BoardInviteRequestDtos
+    ) {
+        User user = userDetailsImpl.getUser();
+        BoardInviteResponseDto boardInviteResponseDto = boardService.inviteUserToBoard(user, boardId, BoardInviteRequestDtos);
+
+        CommonResponseDto commonResponseDto = CommonResponseDto.builder()
+            .msg("보드에 유저들 초대 완료 !")
+            .data(boardInviteResponseDto)
             .build();
 
         return ResponseEntity.ok().body(commonResponseDto);
