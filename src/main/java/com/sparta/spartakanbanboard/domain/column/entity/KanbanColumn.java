@@ -7,11 +7,8 @@ import com.sparta.spartakanbanboard.domain.user.entity.User;
 import jakarta.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+import lombok.*;
 
 
 @Getter
@@ -29,6 +26,10 @@ public class KanbanColumn {
     @Column
     private String columnTitle;
 
+    @Column
+    @Setter
+    private Long orderNumber;
+
     @ManyToOne
     private Board board;
 
@@ -43,5 +44,11 @@ public class KanbanColumn {
 
     public void addCard(Card card) {
         cardList.add(card);
+    }
+
+    public void exChangeOrder(KanbanColumn targetColumn){
+        long temp = this.orderNumber;
+        this.orderNumber = targetColumn.getOrderNumber();
+        targetColumn.setOrderNumber(temp);
     }
 }

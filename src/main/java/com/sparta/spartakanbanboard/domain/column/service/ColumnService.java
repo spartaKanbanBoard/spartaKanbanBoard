@@ -44,9 +44,16 @@ public class ColumnService {
             .build();
     }
 
+    public CommonResponseDto moveColumn(long boardId, long baseId, long targetId) {
+        KanbanColumn baseColumn = findById(baseId);
+        KanbanColumn targetColumn = findById(targetId);
+
+    }
+
     public KanbanColumn findById(long id){
         return columnRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 컬럼이 존재하지 않습니다!"));
     }
+
 }
 
 
