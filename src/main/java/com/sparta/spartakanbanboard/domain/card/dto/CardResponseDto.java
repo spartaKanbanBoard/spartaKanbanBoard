@@ -24,7 +24,6 @@ public class CardResponseDto {
         this.state = card.getState();
     }
 
-    //스트림에서 쓰일수 없다.
     public static CardResponseDto of(Card card) {
 
         return CardResponseDto.builder()
