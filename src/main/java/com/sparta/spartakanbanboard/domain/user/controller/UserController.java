@@ -3,8 +3,8 @@ package com.sparta.spartakanbanboard.domain.user.controller;
 import com.sparta.spartakanbanboard.domain.user.dto.LoginRequestDto;
 import com.sparta.spartakanbanboard.domain.user.dto.SignupRequestDto;
 import com.sparta.spartakanbanboard.domain.user.service.UserService;
-import com.sparta.spartakanbanboard.domain.user.service.global.dto.CommonResponseDto;
-import com.sparta.spartakanbanboard.domain.user.service.global.security.UserDetailsImpl;
+import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
+import com.sparta.spartakanbanboard.global.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -25,28 +25,28 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<CommonResponseDto> signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
-        CommonResponseDto responseDto = userService.signup(signupRequestDto);
+    public ResponseEntity<CommonResponseDto<?>> signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
+        CommonResponseDto<?> responseDto = userService.signup(signupRequestDto);
         return ResponseEntity.ok().body(responseDto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto,
+    public ResponseEntity<CommonResponseDto<?>> login(@Valid @RequestBody LoginRequestDto loginRequestDto,
                                                    HttpServletResponse response) {
-        CommonResponseDto responseDto = userService.login(loginRequestDto, response);
+        CommonResponseDto<?> responseDto = userService.login(loginRequestDto, response);
         return ResponseEntity.ok().body(responseDto);
     }
 
     @DeleteMapping("/logout")
-    public ResponseEntity<CommonResponseDto> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CommonResponseDto responseDto = userService.logout(userDetails.getUser());
+    public ResponseEntity<CommonResponseDto<?>> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        CommonResponseDto<?> responseDto = userService.logout(userDetails.getUser());
         return ResponseEntity.ok().body(responseDto);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<CommonResponseDto> refresh(HttpServletRequest request,
+    public ResponseEntity<CommonResponseDto<?>> refresh(HttpServletRequest request,
                                                      HttpServletResponse response) {
-        CommonResponseDto responseDto = userService.refresh(request,response);
+        CommonResponseDto<?> responseDto = userService.refresh(request,response);
         return ResponseEntity.ok().body(responseDto);
     }
 

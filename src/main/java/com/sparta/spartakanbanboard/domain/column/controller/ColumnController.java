@@ -2,7 +2,7 @@ package com.sparta.spartakanbanboard.domain.column.controller;
 
 import com.sparta.spartakanbanboard.domain.column.dto.ColumnRequestDto;
 import com.sparta.spartakanbanboard.domain.column.service.ColumnService;
-import com.sparta.spartakanbanboard.domain.user.service.global.dto.CommonResponseDto;
+import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;

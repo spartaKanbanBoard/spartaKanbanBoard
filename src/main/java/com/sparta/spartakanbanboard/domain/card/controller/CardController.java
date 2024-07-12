@@ -2,7 +2,7 @@ package com.sparta.spartakanbanboard.domain.card.controller;
 
 import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
 import com.sparta.spartakanbanboard.domain.card.service.CardServiceImpl;
-import com.sparta.spartakanbanboard.domain.user.service.global.dto.CommonResponseDto;
+import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
