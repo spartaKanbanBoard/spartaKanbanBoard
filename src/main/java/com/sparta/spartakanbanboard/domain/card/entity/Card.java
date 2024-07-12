@@ -4,8 +4,16 @@ import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
 import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.domain.user.service.global.entity.TimeStamped;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +38,7 @@ public class Card extends TimeStamped {
     @Column
     private String content;
 
+    @Column
     private Long writerId;
 
     @Enumerated(EnumType.STRING)
