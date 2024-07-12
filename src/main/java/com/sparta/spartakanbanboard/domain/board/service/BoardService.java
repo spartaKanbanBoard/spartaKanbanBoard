@@ -1,5 +1,7 @@
 package com.sparta.spartakanbanboard.domain.board.service;
 
+import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteRequestDto;
+import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardResponseDto;
 import com.sparta.spartakanbanboard.domain.board.entity.Board;
@@ -11,6 +13,7 @@ import com.sparta.spartakanbanboard.domain.user.entity.UserRole;
 import com.sparta.spartakanbanboard.domain.user.service.UserService;
 import com.sparta.spartakanbanboard.global.BusinessLogicException;
 import com.sparta.spartakanbanboard.global.dto.PageDto;
+import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -36,10 +39,10 @@ public class BoardService {
             .board(board)
             .build();
 
-        boardRepository.save(board);
+        Board saveBoard = boardRepository.save(board);
         userBoardMatcherRepository.save(userBoardMatcher);
 
-        return BoardResponseDto.of(board);
+        return BoardResponseDto.of(saveBoard);
     }
 
     public Slice<Board> getBoardList(User user, int page, int size, String sortBy) {
@@ -79,6 +82,35 @@ public class BoardService {
         board.update(boardRequestDto);
 
         return BoardResponseDto.of(board);
+    }
+
+    public void deleteBoard(User user, long boardId) {
+        User curUser = userService.findByUserId(user.getId());
+
+        checkADMINUser(curUser);
+        Board board = findById(boardId);
+
+        boardRepository.delete(board);
+    }
+
+    @Transactional
+    public BoardInviteResponseDto inviteUserToBoard(User user, long boardId, List<BoardInviteRequestDto> boardInviteRequestDtos) {
+        User curUser = userService.findByUserId(user.getId());
+
+        checkADMINUser(curUser);
+        Board board = findById(boardId);
+
+        for(BoardInviteRequestDto requestDto : boardInviteRequestDtos) {
+            User invitedUser = userService.findByUserName(requestDto.getUsername());
+            UserBoardMatcher userBoardMatcher = UserBoardMatcher.builder()
+                .board(board)
+                .user(invitedUser)
+                .build();
+
+            userBoardMatcherRepository.save(userBoardMatcher);
+        }
+
+        return BoardInviteResponseDto.of(boardInviteRequestDtos);
     }
 
     public Board findById(long id) {

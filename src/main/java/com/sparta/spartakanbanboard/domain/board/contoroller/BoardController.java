@@ -1,5 +1,7 @@
 package com.sparta.spartakanbanboard.domain.board.contoroller;
 
+import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteRequestDto;
+import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardResponseDto;
 import com.sparta.spartakanbanboard.domain.board.entity.Board;
@@ -8,10 +10,12 @@ import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
 import com.sparta.spartakanbanboard.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +52,7 @@ public class BoardController {
     public ResponseEntity<CommonResponseDto<Slice<Board>>> getBoardList
         (
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam(value = "page",defaultValue = "1") int page,
             @RequestParam("size") int size,
             @RequestParam(value = "sortBy",defaultValue = "createdAt") String sortBy
             ) {
@@ -68,7 +72,7 @@ public class BoardController {
     public ResponseEntity<CommonResponseDto<Slice<Board>>> getMyBoardList
         (
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam(value = "page",defaultValue = "1") int page,
             @RequestParam("size") int size,
             @RequestParam(value = "sortBy",defaultValue = "createdAt") String sortBy
         ) {
@@ -98,6 +102,37 @@ public class BoardController {
             .build();
 
         return ResponseEntity.ok().body(commonResponseDto);
+    }
 
+    @DeleteMapping("/admins/boards/{boardId}")
+    public ResponseEntity<CommonResponseDto> deleteBoard(
+        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+        @PathVariable("boardId") long boardId
+    ) {
+        User user = userDetailsImpl.getUser();
+        boardService.deleteBoard(user, boardId);
+
+        CommonResponseDto commonResponseDto = CommonResponseDto.builder()
+            .msg("보드 삭제 완료 !")
+            .build();
+
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
+
+    @PostMapping("/admins/boards/{boardId}")
+    public ResponseEntity<CommonResponseDto<List<BoardInviteRequestDto>>> inviteUserToBoard(
+        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+        @PathVariable("boardId") long boardId,
+        @RequestBody List<BoardInviteRequestDto> BoardInviteRequestDtos
+    ) {
+        User user = userDetailsImpl.getUser();
+        BoardInviteResponseDto boardInviteResponseDto = boardService.inviteUserToBoard(user, boardId, BoardInviteRequestDtos);
+
+        CommonResponseDto commonResponseDto = CommonResponseDto.builder()
+            .msg("보드에 유저들 초대 완료 !")
+            .data(boardInviteResponseDto)
+            .build();
+
+        return ResponseEntity.ok().body(commonResponseDto);
     }
 }
