@@ -45,7 +45,7 @@ public class ColumnService {
     }
 
     public KanbanColumn findById(long id){
-        return columnRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("잘못된 ID입니다"));
+        return columnRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 컬럼이 존재하지 않습니다!"));
     }
 }
 
