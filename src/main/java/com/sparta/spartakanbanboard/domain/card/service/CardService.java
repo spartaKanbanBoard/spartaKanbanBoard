@@ -7,9 +7,12 @@ import com.sparta.spartakanbanboard.domain.user.service.global.dto.CommonRespons
 
 public interface CardService {
 
-    CommonResponseDto<?> createCardAtKanbanColumn(Long kanbanColumnId, CreateCardRequestDto requestDto);
 
-    CommonResponseDto<?> findKanbanColumnIdGetCards(Long kanbanColumnId, Long writerId, State state);
+    CommonResponseDto<?> createCardAtKanbanColumn(Long kanbanColumnId,
+        CreateCardRequestDto requestDto);
+
+    CommonResponseDto<?> findKanbanColumnIdGetCards(Long kanbanColumnId, Long writerId,
+        State state);
 
     Card findById(long cardId);
 }
