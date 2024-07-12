@@ -8,4 +8,6 @@ public interface CardService {
     CommonResponseDto<?> createCardAtKanbanColumn(Long kanbanColumnId, CreateCardRequestDto requestDto);
 
     CommonResponseDto<?> findKanbanColumnIdAllCards(Long kanbanColumnId);
+
+    CommonResponseDto<?> findAllByKanbanColumnIdAndWriterId(Long kanbanColumnId, Long userId);
 }

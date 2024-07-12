@@ -30,6 +30,8 @@ public class Card extends TimeStamped {
     @Column
     private String content;
 
+    private Long writerId;
+
     @Enumerated(EnumType.STRING)
     private State state;
 
@@ -37,6 +39,7 @@ public class Card extends TimeStamped {
         Card card = Card.builder()
             .title(cardRequestDto.getTitle())
             .content(cardRequestDto.getContent())
+            .writerId(cardRequestDto.getWriterId())
             .state(State.BEFORE)
             .user(user)
             .kanbanColumn(kanbanColumn)

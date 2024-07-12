@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class CreateCardRequestDto {
 
-    private Long userId;
+    private Long writerId;
 
     @NotBlank
     private String title;
