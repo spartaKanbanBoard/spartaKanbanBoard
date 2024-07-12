@@ -1,6 +1,6 @@
-package com.sparta.spartakanbanboard.domain.user.service.global.security;
+package com.sparta.spartakanbanboard.global.security;
 
-import com.sparta.spartakanbanboard.domain.user.service.global.jwt.JwtUtil;
+import com.sparta.spartakanbanboard.global.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

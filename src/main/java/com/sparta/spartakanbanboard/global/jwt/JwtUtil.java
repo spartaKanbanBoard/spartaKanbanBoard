@@ -1,4 +1,4 @@
-package com.sparta.spartakanbanboard.domain.user.service.global.jwt;
+package com.sparta.spartakanbanboard.global.jwt;
 
 import com.sparta.spartakanbanboard.domain.user.entity.UserRole;
 import io.jsonwebtoken.*;
