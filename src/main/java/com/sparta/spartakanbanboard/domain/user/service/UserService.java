@@ -30,7 +30,7 @@ public class UserService {
     String adminToken;
 
     //회원가입
-    public CommonResponseDto signup(SignupRequestDto signupRequestDto) {
+    public CommonResponseDto<?> signup(SignupRequestDto signupRequestDto) {
         String userName = signupRequestDto.getUserName();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
         UserRole userRole = UserRole.USER;
@@ -62,7 +62,7 @@ public class UserService {
     }
 
     //로그인
-    public CommonResponseDto login(LoginRequestDto requestDto, HttpServletResponse response) {
+    public CommonResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
         User user = findByUserName(requestDto.getUserName());
 
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
@@ -96,7 +96,7 @@ public class UserService {
     }
 
     //로그아웃
-    public CommonResponseDto logout(User user) {
+    public CommonResponseDto<?> logout(User user) {
         user.logout();
         user.updateRefreshToken(null);
         tokenService.deleteRefreshToken(user.getUserName());
@@ -107,7 +107,7 @@ public class UserService {
                 .build();
     }
 
-    public CommonResponseDto refresh(HttpServletRequest request, HttpServletResponse response) {
+    public CommonResponseDto<?> refresh(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = jwtUtil.getTokenFromHeader(JwtUtil.REFRESH_HEADER, request);
 
         if (!jwtUtil.validateToken(refreshToken)) {
