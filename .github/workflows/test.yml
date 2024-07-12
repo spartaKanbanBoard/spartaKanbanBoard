@@ -1,11 +1,11 @@
 on:
   push:
     # 배열로 여러 브랜치를 넣을 수 있다.
-    branches: [ develop, feat/* ]
+    branches: [ dev, feat/* ]
     # github pull request 생성시
   pull_request:
     branches:
-      - develop # -로 여러 브랜치를 명시하는 것도 가능
+      - dev # -로 여러 브랜치를 명시하는 것도 가능
 
 env:
   DOCKER_IMAGE_TAG_NAME: {{이미지 태그명}}
