@@ -3,7 +3,7 @@ package com.sparta.spartakanbanboard.domain.card.service;
 import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
 import com.sparta.spartakanbanboard.domain.card.entity.Card;
 import com.sparta.spartakanbanboard.domain.card.entity.State;
-import com.sparta.spartakanbanboard.domain.user.service.global.dto.CommonResponseDto;
+import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
 
 public interface CardService {
 

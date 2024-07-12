@@ -1,4 +1,4 @@
-package com.sparta.spartakanbanboard.domain.user.service.global.entity;
+package com.sparta.spartakanbanboard.global.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

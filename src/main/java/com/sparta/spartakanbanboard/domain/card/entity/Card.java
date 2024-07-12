@@ -3,7 +3,7 @@ package com.sparta.spartakanbanboard.domain.card.entity;
 import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
 import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
-import com.sparta.spartakanbanboard.domain.user.service.global.entity.TimeStamped;
+import com.sparta.spartakanbanboard.global.entity.TimeStamped;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -43,6 +43,9 @@ public class Card extends TimeStamped {
 
     @Enumerated(EnumType.STRING)
     private State state;
+
+    //순서이동
+    private Long sequence;
 
     public static Card of(CreateCardRequestDto cardRequestDto, User user, KanbanColumn kanbanColumn) {
         Card card = Card.builder()
