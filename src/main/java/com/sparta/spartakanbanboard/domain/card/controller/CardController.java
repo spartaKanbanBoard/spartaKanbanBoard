@@ -41,7 +41,8 @@ public class CardController {
         @RequestParam(required = false) Long writerId,
         @RequestParam(required = false) State state
     ) {
-        CommonResponseDto<?> cardResponseDtoList = cardService.findKanbanColumnIdGetCards(kanbanColumnId, writerId, state) ;
+        CommonResponseDto<?> cardResponseDtoList = cardService.findKanbanColumnIdGetCards(
+            kanbanColumnId, writerId, state);
         return ResponseEntity.ok().body(cardResponseDtoList);
     }
 }
