@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
 
-    List<Card> findAllByKanbanColumnId(Long kanbanColumnId);
 
     List<Card> findAllByKanbanColumnIdAndWriterId(Long kanbanColumnId, Long writerId);
 
-    List<Card> findAllByKanbanColumnIdAndState(Long kanbanColumn_id, State state);
+    List<Card> findAllByKanbanColumnIdAndState(Long kanbanColumnId, State state);
 
+    List<Card> findAllByKanbanColumnId(Long kanbanColumnId);
 }
