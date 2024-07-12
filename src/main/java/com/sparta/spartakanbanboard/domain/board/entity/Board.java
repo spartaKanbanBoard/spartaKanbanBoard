@@ -1,6 +1,7 @@
 package com.sparta.spartakanbanboard.domain.board.entity;
 
 import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
+import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
 import com.sparta.spartakanbanboard.domain.user.service.global.entity.TimeStamped;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -40,9 +41,9 @@ public class Board extends TimeStamped {
 //    @Singular("userBoardMatchersList")
 //    private List<UserBoardMatcher> userBoardMatchersList = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @Singular("kanbanColumn")
-//    private List<KanbanColumn> kanbanColumn = new ArrayList<>();
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Singular("kanbanColumn")
+    private List<KanbanColumn> kanbanColumn = new ArrayList<>();
 
     public static Board of(BoardRequestDto boardRequestDto) {
         return Board.builder()
