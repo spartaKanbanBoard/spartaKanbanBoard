@@ -16,4 +16,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findAllByKanbanColumnIdAndState(Long kanbanColumnId, State state);
 
     List<Card> findAllByKanbanColumnId(Long kanbanColumnId);
+
+    Card findByIdAndKanbanColumnId(Long kanbanColumnId, Long cardId);
 }
