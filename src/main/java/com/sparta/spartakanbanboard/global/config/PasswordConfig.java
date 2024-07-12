@@ -1,4 +1,4 @@
-package com.sparta.spartakanbanboard.domain.user.service.global.config;
+package com.sparta.spartakanbanboard.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

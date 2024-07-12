@@ -1,4 +1,4 @@
-package com.sparta.spartakanbanboard.domain.user.service.global.dto;
+package com.sparta.spartakanbanboard.global.dto;
 import lombok.Builder;
 import lombok.Getter;
 

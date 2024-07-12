@@ -2,7 +2,7 @@ package com.sparta.spartakanbanboard.domain.board.entity;
 
 import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
 import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
-import com.sparta.spartakanbanboard.domain.user.service.global.entity.TimeStamped;
+import com.sparta.spartakanbanboard.global.entity.TimeStamped;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

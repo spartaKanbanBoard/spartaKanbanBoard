@@ -1,4 +1,4 @@
-package com.sparta.spartakanbanboard.domain.user.service.global;
+package com.sparta.spartakanbanboard.global;
 
 public class BusinessLogicException extends RuntimeException{
 

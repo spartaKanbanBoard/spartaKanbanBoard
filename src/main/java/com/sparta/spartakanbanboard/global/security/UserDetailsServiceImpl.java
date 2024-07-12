@@ -1,4 +1,4 @@
-package com.sparta.spartakanbanboard.domain.user.service.global.security;
+package com.sparta.spartakanbanboard.global.security;
 
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.domain.user.repository.UserRepository;
