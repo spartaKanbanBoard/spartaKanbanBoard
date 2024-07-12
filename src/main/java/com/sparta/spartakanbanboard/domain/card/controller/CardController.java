@@ -24,8 +24,9 @@ public class CardController {
 
     @PostMapping
     public ResponseEntity<CommonResponseDto<?>> createCardAtKanbanColumn(
-        @PathVariable @Valid Long kanbanColumnId,
-        @RequestBody CreateCardRequestDto requestDto) {
+        @PathVariable Long kanbanColumnId,
+        @RequestBody @Valid CreateCardRequestDto requestDto
+    ) {
 
         CommonResponseDto<?> commonResponseDto = cardService.createCardAtKanbanColumn(
             kanbanColumnId, requestDto);
@@ -33,33 +34,35 @@ public class CardController {
     }
 
     //전체조회
+    //required 기본은 true
     @GetMapping
     public ResponseEntity<CommonResponseDto<?>> findKanbanColumnIdAllCards(
-        @PathVariable @Valid Long kanbanColumnId) {
-        CommonResponseDto<?> cardResponseDtoList = cardService.findKanbanColumnIdAllCards(
-            kanbanColumnId);
+        @PathVariable Long kanbanColumnId,
+        @RequestParam(required = false) Long writerId,
+        @RequestParam(required = false) State state
+    ) {
+        CommonResponseDto<?> cardResponseDtoList = cardService.findKanbanColumnIdAllCards(kanbanColumnId, writerId, state) ;
         return ResponseEntity.ok().body(cardResponseDtoList);
     }
 
-    @GetMapping("/{writerId}")
-    public ResponseEntity<CommonResponseDto<?>> findAllByKanbanColumnIdAndUserId(
-        @PathVariable @Valid Long kanbanColumnId,
-        @PathVariable @Valid Long writerId) {
-
-        CommonResponseDto<?> cardResponseDtoList = cardService.findAllByKanbanColumnIdAndWriterId(
-            kanbanColumnId, writerId);
-        return ResponseEntity.ok().body(cardResponseDtoList);
-    }
-
-    @GetMapping("/{cardState}")
-    public ResponseEntity<CommonResponseDto<?>> findAllByKanbanColumnIdAndState(
-        @PathVariable @Valid Long kanbanColumnId,
-        @PathVariable @Valid State cardState) {
-
-        CommonResponseDto<?> cardResponseDtoList = cardService.findAllByKanbanColumnIdAndState(
-            kanbanColumnId, cardState);
-        return ResponseEntity.ok().body(cardResponseDtoList);
-    }
-
+//    @GetMapping("/{writerId}")
+//    public ResponseEntity<CommonResponseDto<?>> findAllByKanbanColumnIdAndWriterId(
+//        @PathVariable Long kanbanColumnId,
+//        @PathVariable @Valid Long writerId) {
+//
+//        CommonResponseDto<?> cardResponseDtoList = cardService.findAllByKanbanColumnIdAndWriterId(kanbanColumnId, writerId);
+//        return ResponseEntity.ok().body(cardResponseDtoList);
+//    }
+//
+//    @GetMapping("/{cardState}")
+//    public ResponseEntity<CommonResponseDto<?>> findAllByKanbanColumnIdAndState(
+//        @PathVariable @Valid Long kanbanColumnId,
+//        @PathVariable @Valid State cardState) {
+//
+//        CommonResponseDto<?> cardResponseDtoList = cardService.findAllByKanbanColumnIdAndState(
+//            kanbanColumnId, cardState);
+//        return ResponseEntity.ok().body(cardResponseDtoList);
+//    }
+//
 
 }
