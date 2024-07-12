@@ -33,7 +33,7 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping("/admins/boards")
-    public ResponseEntity<CommonResponseDto<BoardResponseDto>> createBoard(
+    public ResponseEntity<?> createBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
         @Valid @RequestBody BoardRequestDto boardRequestDto) {
 
@@ -49,7 +49,7 @@ public class BoardController {
     }
 
     @GetMapping("/admins/boards")
-    public ResponseEntity<CommonResponseDto<Slice<Board>>> getBoardList
+    public ResponseEntity<?> getBoardList
         (
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
             @RequestParam(value = "page",defaultValue = "1") int page,
@@ -69,7 +69,7 @@ public class BoardController {
     }
 
     @GetMapping("/boards")
-    public ResponseEntity<CommonResponseDto<Slice<Board>>> getMyBoardList
+    public ResponseEntity<?> getMyBoardList
         (
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
             @RequestParam(value = "page",defaultValue = "1") int page,
@@ -88,7 +88,7 @@ public class BoardController {
     }
 
     @PutMapping("/admins/boards/{boardId}")
-    public ResponseEntity<CommonResponseDto<BoardResponseDto>> updateBoard(
+    public ResponseEntity<?> updateBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
         @PathVariable("boardId") long boardId,
         @RequestBody BoardRequestDto boardRequestDto
@@ -105,7 +105,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/admins/boards/{boardId}")
-    public ResponseEntity<CommonResponseDto> deleteBoard(
+    public ResponseEntity<?> deleteBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
         @PathVariable("boardId") long boardId
     ) {
@@ -120,7 +120,7 @@ public class BoardController {
     }
 
     @PostMapping("/admins/boards/{boardId}")
-    public ResponseEntity<CommonResponseDto<List<BoardInviteRequestDto>>> inviteUserToBoard(
+    public ResponseEntity<?> inviteUserToBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
         @PathVariable("boardId") long boardId,
         @RequestBody List<BoardInviteRequestDto> BoardInviteRequestDtos
