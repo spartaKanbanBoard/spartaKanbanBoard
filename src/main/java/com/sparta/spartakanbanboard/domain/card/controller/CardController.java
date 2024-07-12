@@ -33,8 +33,6 @@ public class CardController {
         return ResponseEntity.ok().body(commonResponseDto);
     }
 
-    //전체조회
-    //required 기본은 true
     @GetMapping
     public ResponseEntity<CommonResponseDto<?>> findKanbanColumnIdAllCards(
         @PathVariable Long kanbanColumnId,
