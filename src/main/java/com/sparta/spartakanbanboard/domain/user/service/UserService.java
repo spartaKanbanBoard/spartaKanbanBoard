@@ -24,12 +24,13 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+//    private final TokenService tokenService;
     private final JwtUtil jwtUtil;
     @Value("${ADMIN_TOKEN}")
     String adminToken;
 
     //회원가입
-    public CommonResponseDto signup(SignupRequestDto signupRequestDto) {
+    public CommonResponseDto<?> signup(SignupRequestDto signupRequestDto) {
         String userName = signupRequestDto.getUserName();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
         UserRole userRole = UserRole.USER;
@@ -61,7 +62,7 @@ public class UserService {
     }
 
     //로그인
-    public CommonResponseDto login(LoginRequestDto requestDto, HttpServletResponse response) {
+    public CommonResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
         User user = findByUserName(requestDto.getUserName());
 
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
@@ -70,8 +71,11 @@ public class UserService {
         String accessToken = jwtUtil.createAccessToken(user.getUserName(),user.getUserRole());
         String refreshToken = jwtUtil.createRefreshToken(user.getUserName());
 
-        // DB에 토큰 저장 및 유저 상태 변경
+        // redis 에 토큰 저장 및 유저 상태 변경
         String substringRefreshToken = refreshToken.substring(JwtUtil.BEARER_PREFIX.length());
+//        tokenService.saveRefreshToken(user.getUserName(), substringRefreshToken);
+
+        //유저 상태 변경
         user.updateRefreshToken(substringRefreshToken);
         user.login();
         userRepository.save(user);
@@ -92,9 +96,10 @@ public class UserService {
     }
 
     //로그아웃
-    public CommonResponseDto logout(User user) {
+    public CommonResponseDto<?> logout(User user) {
         user.logout();
         user.updateRefreshToken(null);
+//        tokenService.deleteRefreshToken(user.getUserName());
         userRepository.save(user);
 
         return CommonResponseDto.builder()
@@ -102,7 +107,7 @@ public class UserService {
                 .build();
     }
 
-    public CommonResponseDto refresh(HttpServletRequest request, HttpServletResponse response) {
+    public CommonResponseDto<?> refresh(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = jwtUtil.getTokenFromHeader(JwtUtil.REFRESH_HEADER, request);
 
         if (!jwtUtil.validateToken(refreshToken)) {
@@ -149,4 +154,5 @@ public class UserService {
         return userRepository.findByUserName(userName).orElseThrow(() ->
                 new BusinessLogicException("해당 유저를 찾을 수 없습니다."));
     }
+
 }
