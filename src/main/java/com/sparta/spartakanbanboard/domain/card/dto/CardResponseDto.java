@@ -19,7 +19,6 @@ public class CardResponseDto {
     private LocalDateTime endTime;
     private int sequence;
 
-
     public CardResponseDto(Card card) {
         this.username = card.getUsername();
         this.title = card.getTitle();
