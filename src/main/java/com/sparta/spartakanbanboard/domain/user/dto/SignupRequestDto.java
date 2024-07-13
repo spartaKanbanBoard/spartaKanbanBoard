@@ -1,6 +1,5 @@
 package com.sparta.spartakanbanboard.domain.user.dto;
 
-import com.sparta.spartakanbanboard.domain.user.entity.UserRole;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 

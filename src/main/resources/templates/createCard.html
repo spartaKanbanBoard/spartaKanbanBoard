@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카드 생성</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            text-decoration: none; /* 링크 스타일 제거 */
+            display: inline-block; /* 링크를 인라인 블록 요소로 설정 */
+            border-radius: 4px; /* 버튼 모서리를 둥글게 만듭니다. */
+            margin-right: 10px; /* 버튼 사이 간격 조정 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>카드 생성</h1>
+    <form id="createForm">
+        <div class="form-group">
+            <label for="title">기능명</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="assignee">담당자</label>
+            <input type="text" id="assignee" name="assignee" required>
+        </div>
+        <div class="form-group">
+            <label for="dueDate">마감일자</label>
+            <input type="text" id="dueDate" name="dueDate" placeholder="YYYY-MM-DD" required>
+        </div>
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea id="content" name="content" rows="4" required></textarea>
+        </div>
+        <div class="button-container">
+            <button type="submit" class="button">카드 저장</button>
+            <a href="board.html" class="button">돌아가기</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('createForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 폼의 기본 동작 방지
+
+        // 폼 데이터 가져오기
+        const formData = new FormData(this);
+        const formDataObject = {};
+        formData.forEach((value, key) => {
+            formDataObject[key] = value;
+        });
+
+        // 여기서 실제로 데이터를 처리하거나 저장하는 로직을 추가할 수 있습니다.
+        console.log('카드가 성공적으로 저장되었습니다.');
+        console.log(formDataObject);
+    });
+</script>
+
+</body>
+</html>

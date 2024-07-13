@@ -10,5 +10,7 @@ public interface CardCommentService {
 	CommonResponseDto<?> createCommentByCardId(Long cardId,
 		CreateCommentRequestDto commentRequestDto, UserDetailsImpl userDetails);
 
+	CommonResponseDto<?> getAllComments(Long cardId, UserDetailsImpl userDetails);
+
 	CardComment findById(Long commentId);
 }

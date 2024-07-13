@@ -1,6 +1,7 @@
 package com.sparta.spartakanbanboard.domain.cardcomment.entity;
 
 import com.sparta.spartakanbanboard.domain.card.entity.Card;
+import com.sparta.spartakanbanboard.domain.cardcomment.dto.CardCommentResponseDto;
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.CreateCommentRequestDto;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.global.entity.TimeStamped;
@@ -36,11 +37,11 @@ public class CardComment extends TimeStamped {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id")
-    private Card card;
+    Card card;
 
     public static CardComment of(CreateCommentRequestDto commentRequestDto, User user, Card card) {
         CardComment cardComment = CardComment.builder()
