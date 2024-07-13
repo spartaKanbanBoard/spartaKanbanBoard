@@ -85,7 +85,8 @@ public class Card extends TimeStamped {
         this.user = user;
     }
 
-    public void addSequence(int sequence) {
+    public void setSequence(int sequence) {
         this.sequence = sequence;
     }
+
 }

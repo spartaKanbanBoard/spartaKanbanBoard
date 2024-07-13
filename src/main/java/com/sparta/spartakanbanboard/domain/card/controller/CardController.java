@@ -1,6 +1,7 @@
 package com.sparta.spartakanbanboard.domain.card.controller;
 
 import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
+import com.sparta.spartakanbanboard.domain.card.dto.DeleteCardRequestDto;
 import com.sparta.spartakanbanboard.domain.card.dto.EditCardRequestDto;
 import com.sparta.spartakanbanboard.domain.card.dto.MoveLocationRequestDto;
 import com.sparta.spartakanbanboard.domain.card.entity.State;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.method.P;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,6 +71,15 @@ public class CardController {
 
         return ResponseEntity.ok().body(commonResponseDto);
 
+    }
+    @DeleteMapping
+    public ResponseEntity<?> deleteFindByKanbanColumnIdAndCard(
+        @PathVariable Long kanbanColumnId,
+        @RequestBody @Valid DeleteCardRequestDto requestDto
+    ) {
+        CommonResponseDto<?> commonResponseDto = cardService.deleteFindByKanbanColumnIdAndCard(kanbanColumnId, requestDto);
+
+        return ResponseEntity.ok().body(commonResponseDto);
     }
 
 }
