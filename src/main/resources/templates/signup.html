@@ -55,15 +55,15 @@
 <body>
 <div class="signup-container">
     <h2>회원가입</h2>
-    <form action="#">
+    <form id="signupForm" onsubmit="signup(event)">
         <div class="input-field">
-            <input type="text" id="username" name="username" placeholder="사용자 이름" required>
+            <input type="text" id="userName" name="userName" placeholder="아이디" required>
         </div>
         <div class="input-field">
             <input type="password" id="password" name="password" placeholder="비밀번호" required>
         </div>
         <div>
-            <input type="checkbox" id="isAdmin" name="isAdmin" onchange="toggleTokenField()">
+            <input type="checkbox" id="isAdmin" name="isAdmin" onchange="toggleRoleField()">
             <label for="isAdmin">ADMIN 체크</label>
         </div>
         <div class="token-field" id="tokenField">
@@ -71,6 +71,7 @@
                 <input type="text" id="adminToken" name="adminToken" placeholder="adminToken">
             </div>
         </div>
+        <input type="hidden" id="role" name="role" value="">
         <div class="button-container">
             <button type="submit" class="button">회원가입</button>
             <button type="button" class="button cancel" onclick="goBack()">돌아가기</button>
@@ -79,15 +80,47 @@
 </div>
 
 <script>
-    function toggleTokenField() {
+    function toggleRoleField() {
         const isAdminCheckbox = document.getElementById('isAdmin');
+        const roleField = document.getElementById('role');
         const tokenField = document.getElementById('tokenField');
 
         if (isAdminCheckbox.checked) {
+            roleField.value = 'ADMIN';
             tokenField.style.display = 'block';
         } else {
+            roleField.value = '';
             tokenField.style.display = 'none';
         }
+    }
+
+    function signup(event) {
+        event.preventDefault();
+
+        const userName = document.getElementById('userName').value;
+        const password = document.getElementById('password').value;
+        const role = document.getElementById('role').value;
+        const adminToken = document.getElementById('adminToken').value;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/users/signup', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    alert('회원가입 성공!');
+                    window.location.href = '/'; // 회원가입 후 로그인 페이지로 리디렉션
+                } else {
+                    alert('회원가입 실패: ' + xhr.responseText);
+                }
+            }
+        };
+        xhr.send(JSON.stringify({
+            userName: userName,
+            password: password,
+            role: role,
+            adminToken: adminToken
+        }));
     }
 
     function goBack() {
