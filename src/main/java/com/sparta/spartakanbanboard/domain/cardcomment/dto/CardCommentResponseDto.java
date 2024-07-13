@@ -12,6 +12,10 @@ public class CardCommentResponseDto {
 
 	private final String content;
 
+	public CardCommentResponseDto(CardComment cardComment) {
+		this.content = cardComment.getContent();
+	}
+
 	public static CardCommentResponseDto of(CardComment cardComment) {
 
 		return CardCommentResponseDto.builder()

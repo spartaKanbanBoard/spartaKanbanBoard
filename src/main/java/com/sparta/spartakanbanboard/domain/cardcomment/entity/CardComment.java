@@ -1,6 +1,7 @@
 package com.sparta.spartakanbanboard.domain.cardcomment.entity;
 
 import com.sparta.spartakanbanboard.domain.card.entity.Card;
+import com.sparta.spartakanbanboard.domain.cardcomment.dto.CardCommentResponseDto;
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.CreateCommentRequestDto;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.global.entity.TimeStamped;
