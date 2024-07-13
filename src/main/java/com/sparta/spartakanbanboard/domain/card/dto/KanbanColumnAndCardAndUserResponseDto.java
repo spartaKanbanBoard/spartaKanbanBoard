@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class KanbanColumnAndCardResponseDto {
+public class KanbanColumnAndCardAndUserResponseDto {
 
     private ColumnResponseDto column;
     private CardResponseDto card;
