@@ -94,6 +94,16 @@
             margin: 0 10px;
             font-size: 1.2em;
         }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+        }
+        .board-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -106,32 +116,13 @@
         <!-- 보드 내용은 JavaScript에서 동적으로 추가됩니다 -->
     </div>
     <button class="add-board-button" onclick="redirectToCreateBoard()">보드 생성</button>
-    <div class="pagination" id="pagination">
-        <button id="prev-page" onclick="prevPage()">이전 페이지</button>
-        <span class="current-page" id="current-page">1</span>
-        <button id="next-page" onclick="nextPage()">다음 페이지</button>
-    </div>
+    <div class="loading" id="loading">Loading...</div>
 </div>
 
 <script>
-    const boardsPerPage = 6;
     let currentPage = 1;
-
-    const boardsData = [
-        { title: "Board 1", description: "This is the description of Board 1." },
-        { title: "Board 2", description: "This is the description of Board 2." },
-        { title: "Board 3", description: "This is the description of Board 3." },
-        { title: "Board 4", description: "This is the description of Board 4." },
-        { title: "Board 5", description: "This is the description of Board 5." },
-        { title: "Board 6", description: "This is the description of Board 6." },
-        { title: "Board 7", description: "This is the description of Board 7." },
-        { title: "Board 8", description: "This is the description of Board 8." },
-        { title: "Board 9", description: "This is the description of Board 9." },
-        { title: "Board 10", description: "This is the description of Board 10." },
-        { title: "Board 11", description: "This is the description of Board 11." },
-        { title: "Board 12", description: "This is the description of Board 12." },
-        { title: "13번 보드", description: "13번 보드 입니다." }
-    ];
+    const itemsPerPage = 6;
+    let isLoading = false;
 
     function logout() {
         const token = localStorage.getItem("Authorization");
@@ -170,57 +161,191 @@
         goToPage(currentPage);
     }
 
-    function goToPage(pageNumber) {
-        const totalPages = Math.ceil(boardsData.length / boardsPerPage);
-        if (pageNumber < 1 || pageNumber > totalPages) return;
+    async function loadMoreCards() {
+        if (isLoading) return;
+        isLoading = true;
+        try {
+            await fetchBoards(currentPage);
+            currentPage++;
+        } catch (error) {
+            console.error('Error loading more cards:', error);
+        } finally {
+            isLoading = false;
+        }
+    }
 
-        currentPage = pageNumber;
+    const observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+            loadMoreCards();
+        }
+    }, { threshold: 1 });
+
+    observer.observe(document.getElementById('loading'));
+
+    // 초기 로드
+    loadMoreCards();
+
+    function fetchBoards(pageNumber) {
         const kanbanBoard = document.getElementById('kanban-board');
-        kanbanBoard.innerHTML = '';
-        const start = (pageNumber - 1) * boardsPerPage;
-        const end = start + boardsPerPage;
-        const pageBoards = boardsData.slice(start, end);
+        fetch(`/api/admins/boards?page=${pageNumber}&size=${itemsPerPage}&sortBy=createdAt`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': localStorage.getItem("Authorization"),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('네트워크 상태가 좋지 않습니다.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('보드 데이터:', data);
+                    // document.getElementById('board-title').textContent = data.title;
+                    // document.getElementById('board-description').textContent = data.description;
+                    // kanbanBoard.innerHTML = '';
+                    data.data.content.forEach(board => {
+                        const boardElement = document.createElement('div');
+                        boardElement.className = 'board';
+                        boardElement.innerHTML = `
+                        <div id=board${board.id} class="board-title">${board.title}</div>
+                        <div class="board-description">${board.boardInfo}</div>
+                         <div class="board-buttons">
+                            <button class="update-button">수정</button>
+                             <button class="delete-button">삭제</button>
+                         </div>
+                    `;
+                        boardElement.querySelector('.update-button').addEventListener('click', (event) => {
+                            event.stopPropagation();
+                            enableBoardEditing(boardElement, board.id)});
 
-        pageBoards.forEach(board => {
-            const boardElement = document.createElement('div');
-            boardElement.className = 'board';
-            boardElement.innerHTML = `
-                <div class="board-title">${board.title}</div>
-                <div class="board-description">${board.description}</div>
-            `;
-            kanbanBoard.appendChild(boardElement);
+                        boardElement.querySelector('.delete-button').addEventListener('click', (event) => {
+                            event.stopPropagation();
+                            deleteBoard(board.id)});
+                        //보드 클릭시
+                        boardElement.addEventListener('click',() => fetchBoardDetails(board.id))
+                        kanbanBoard.appendChild(boardElement);
+                    });
+
+
+                })
+                .catch(error => {
+                    console.error('보드 정보를 불러오는 중 오류 발생:', error);
+                    alert('보드 정보를 불러오는 중 오류가 발생했습니다.');
+                });
+
+    }
+
+
+    function enableBoardEditing(boardElement, boardId) {
+        const title = boardElement.querySelector('.board-title').innerText;
+        const boardInfo = boardElement.querySelector('.board-description').innerText;
+
+        boardElement.innerHTML = `
+            <input type="text" class="board-title-input" value="${title}">
+            <textarea class="board-description-input">${boardInfo}</textarea>
+            <div class="board-buttons">
+                <button class="save-button">저장</button>
+                <button class="cancel-button">취소</button>
+            </div>
+        `;
+
+        boardElement.querySelector('.board-title-input').addEventListener('click', (event) => {
+            event.stopPropagation();
         });
 
-        updatePagination();
+        boardElement.querySelector('.board-description-input').addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+
+        boardElement.querySelector('.save-button').addEventListener('click', (event) => {
+            event.stopPropagation();
+            const updatedTitle = boardElement.querySelector('.board-title-input').value;
+            const updatedBoardInfo = boardElement.querySelector('.board-description-input').value;
+            updateBoard(boardId, updatedTitle, updatedBoardInfo, boardElement);
+        });
+
+        boardElement.querySelector('.cancel-button').addEventListener('click', (event) => {
+            event.stopPropagation();
+            cancelBoardEditing(boardElement, boardId, title, boardInfo);
+        });
     }
 
-    function updatePagination() {
-        const totalPages = Math.ceil(boardsData.length / boardsPerPage);
-        const currentPageElement = document.getElementById('current-page');
-        currentPageElement.textContent = currentPage;
+    function cancelBoardEditing(boardElement, boardId, title, boardInfo) {
+        boardElement.innerHTML = `
+            <div id=board${boardId} class="board-title">${title}</div>
+            <div class="board-description">${boardInfo}</div>
+            <div class="board-buttons">
+                <button class="update-button">수정</button>
+                <button class="delete-button">삭제</button>
+            </div>
+        `;
 
-        const prevPageButton = document.getElementById('prev-page');
-        const nextPageButton = document.getElementById('next-page');
+        boardElement.querySelector('.update-button').addEventListener('click', (event) => {
+            event.stopPropagation(); // 이벤트 전파 막기
+            enableBoardEditing(boardElement, boardId);
+        });
 
-        prevPageButton.style.display = currentPage === 1 ? 'none' : 'block';
-        nextPageButton.style.display = currentPage === totalPages ? 'none' : 'block';
+        boardElement.querySelector('.delete-button').addEventListener('click', (event) => {
+            event.stopPropagation(); // 이벤트 전파 막기
+            deleteBoard(boardId);
+        });
+
+        boardElement.addEventListener('click', () => fetchBoardDetails(boardId));
     }
 
-    function prevPage() {
-        if (currentPage > 1) {
-            goToPage(currentPage - 1);
+    async function updateBoard(boardId, title, boardInfo, boardElement) {
+        const updatedBoard = { title, boardInfo };
+
+        try {
+            const response = await fetch(`/api/admins/boards/${boardId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': localStorage.getItem("Authorization"),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedBoard)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update board');
+            }
+
+            alert('Board updated successfully');
+            cancelBoardEditing(boardElement, boardId, title, boardInfo);
+        } catch (error) {
+            console.error('Error updating board:', error);
+            alert('Error updating board');
         }
     }
 
-    function nextPage() {
-        const totalPages = Math.ceil(boardsData.length / boardsPerPage);
-        if (currentPage < totalPages) {
-            goToPage(currentPage + 1);
+
+    async function deleteBoard(boardId) {
+        try {
+            const response = await fetch(`/api/admins/boards/${boardId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': localStorage.getItem("Authorization")
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete board');
+            }
+
+            document.getElementById(`board${boardId}`).parentElement.remove();
+            alert('Board deleted successfully');
+        } catch (error) {
+            console.error('Error deleting board:', error);
+            alert('Error deleting board');
         }
     }
 
-    // 초기 페이지 로드
-    goToPage(1);
+    function fetchBoardDetails(boardId) {
+        window.location.href = `/board.html?boardId=${boardId}`;
+    }
+
 </script>
 </body>
 </html>

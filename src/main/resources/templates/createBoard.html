@@ -94,9 +94,37 @@
     }
 
     function createBoard() {
-        // Implement board creation logic here
-        alert('보드가 생성되었습니다.');
-        // You can redirect or perform other actions after board creation
+        const boardName = document.getElementById('board-name').value;
+        const boardDescription = document.getElementById('board-description').value;
+
+        const boardData = {
+            title: boardName,
+            boardInfo: boardDescription
+        };
+
+        fetch('/api/admins/boards', {
+            method: 'POST',
+            headers: {
+                'Authorization': localStorage.getItem("Authorization"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(boardData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to create board');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert('보드가 생성되었습니다.');
+            // 보드 생성 후 필요한 작업 수행
+            window.location.href = '/mainPageAfterLogin.html'; // 예: 메인 페이지로 이동
+        })
+        .catch(error => {
+            console.error('Error creating board:', error);
+            alert('보드 생성 중 오류가 발생했습니다.');
+        });
     }
 </script>
 </body>

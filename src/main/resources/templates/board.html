@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jQuery 라이브러리 추가 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>게시판</title>
     <style>
         body {
@@ -78,70 +80,178 @@
 </head>
 <body>
 <div class="header">
-    <h1>게시판</h1>
+    <div>
+        <h1 id = "board-title">게시판</h1>
+        <h3 id = "board-info">설명</h3>
+    </div>
     <div class="buttons">
+        <button class="button" onclick="goBack()">뒤로 가기</button>
+        <button class="button" onclick="logout()">로그아웃</button>
         <button id="editButton" class="button">컬럼 수정</button>
         <a href="createColumn.html" class="button">컬럼 생성</a>
     </div>
 </div>
 
-<div id="columnsContainer" style="display: flex; justify-content: space-around;">
-    <!-- 기본으로 세 개의 컬럼이 있습니다. -->
-    <div id="column1" class="column">
-        <h2><span id="columnTitle1">첫 번째 컬럼</span><input type="text" id="editColumnInput1" style="display: none;"></h2>
-        <a href="createCard.html" class="button">카드 생성</a>
-        <div id="card1" class="card" draggable="true">
-            <div>카드 1</div>
-            <div class="card-info">담당자: UserA</div>
-            <div class="card-info">마감일자: 2024-07-31</div>
-            <button class="close-button" onclick="removeCard(this)">X</button>
-        </div>
-        <div id="card2" class="card" draggable="true">
-            <div>카드 2</div>
-            <div class="card-info">담당자: UserB</div>
-            <div class="card-info">마감일자: 2024-08-15</div>
-            <button class="close-button" onclick="removeCard(this)">X</button>
-        </div>
-        <div id="card3" class="card" draggable="true">
-            <div>카드 3</div>
-            <div class="card-info">담당자: UserC</div>
-            <div class="card-info">마감일자: 2024-08-30</div>
-            <button class="close-button" onclick="removeCard(this)">X</button>
-        </div>
-    </div>
+<div id="board-details">
 
-    <div id="column2" class="column">
-        <h2><span id="columnTitle2">두 번째 컬럼</span><input type="text" id="editColumnInput2" style="display: none;"></h2>
-        <a href="createCard.html" class="button">카드 생성</a>
-        <div id="card4" class="card" draggable="true">
-            <div>카드 4</div>
-            <div class="card-info">담당자: UserD</div>
-            <div class="card-info">마감일자: 2024-09-10</div>
-            <button class="close-button" onclick="removeCard(this)">X</button>
-        </div>
-        <div id="card5" class="card" draggable="true">
-            <div>카드 5</div>
-            <div class="card-info">담당자: UserE</div>
-            <div class="card-info">마감일자: 2024-09-25</div>
-            <button class="close-button" onclick="removeCard(this)">X</button>
-        </div>
-    </div>
-
-    <div id="column3" class="column">
-        <h2><span id="columnTitle3">세 번째 컬럼</span><input type="text" id="editColumnInput3" style="display: none;"></h2>
-        <a href="createCard.html" class="button">카드 생성</a>
-        <div id="card6" class="card" draggable="true">
-            <div>카드 6</div>
-            <div class="card-info">담당자: UserF</div>
-            <div class="card-info">마감일자: 2024-10-05</div>
-            <button class="close-button" onclick="removeCard(this)">X</button>
-        </div>
-    </div>
 </div>
+<div id="columns-container" style="display: flex; justify-content: space-around;">
+    <!-- 기본으로 세 개의 컬럼이 있습니다. -->
+<!--    <div id="column1" class="column">-->
+<!--        <h2><span id="columnTitle1">첫 번째 컬럼</span><input type="text" id="editColumnInput1" style="display: none;"></h2>-->
+<!--        <a href="createCard.html" class="button">카드 생성</a>-->
+<!--        <div id="card1" class="card" draggable="true">-->
+<!--            <div>카드 1</div>-->
+<!--            <div class="card-info">담당자: UserA</div>-->
+<!--            <div class="card-info">마감일자: 2024-07-31</div>-->
+<!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
+<!--        </div>-->
+<!--        <div id="card2" class="card" draggable="true">-->
+<!--            <div>카드 2</div>-->
+<!--            <div class="card-info">담당자: UserB</div>-->
+<!--            <div class="card-info">마감일자: 2024-08-15</div>-->
+<!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
+<!--        </div>-->
+<!--        <div id="card3" class="card" draggable="true">-->
+<!--            <div>카드 3</div>-->
+<!--            <div class="card-info">담당자: UserC</div>-->
+<!--            <div class="card-info">마감일자: 2024-08-30</div>-->
+<!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div id="column2" class="column">-->
+<!--        <h2><span id="columnTitle2">두 번째 컬럼</span><input type="text" id="editColumnInput2" style="display: none;"></h2>-->
+<!--        <a href="createCard.html" class="button">카드 생성</a>-->
+<!--        <div id="card4" class="card" draggable="true">-->
+<!--            <div>카드 4</div>-->
+<!--            <div class="card-info">담당자: UserD</div>-->
+<!--            <div class="card-info">마감일자: 2024-09-10</div>-->
+<!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
+<!--        </div>-->
+<!--        <div id="card5" class="card" draggable="true">-->
+<!--            <div>카드 5</div>-->
+<!--            <div class="card-info">담당자: UserE</div>-->
+<!--            <div class="card-info">마감일자: 2024-09-25</div>-->
+<!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div id="column3" class="column">-->
+<!--        <h2><span id="columnTitle3">세 번째 컬럼</span><input type="text" id="editColumnInput3" style="display: none;"></h2>-->
+<!--        <a href="createCard.html" class="button">카드 생성</a>-->
+<!--        <div id="card6" class="card" draggable="true">-->
+<!--            <div>카드 6</div>-->
+<!--            <div class="card-info">담당자: UserF</div>-->
+<!--            <div class="card-info">마감일자: 2024-10-05</div>-->
+<!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
+<!--        </div>-->
+</div>
+<!--</div>-->
 
 <script>
-    let dragged; // 드래그 중인 카드를 저장할 변수
+    function goBack() {
+        window.history.back();
+    }
 
+    function logout() {
+        const token = localStorage.getItem("Authorization");
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('DELETE', '/api/users/logout', true);
+        xhr.setRequestHeader('Authorization', token);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    alert(response.msg);
+                    localStorage.removeItem('Authorization');
+                    localStorage.removeItem('refresh');
+                    window.location.href = '/';
+                } else {
+                    console.error('로그아웃 실패:', xhr.status);
+                    alert('로그아웃에 실패했습니다.');
+                }
+            }
+        };
+        xhr.send();
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const boardId = urlParams.get('boardId');
+    if (!boardId) {
+        alert('잘못된 요청입니다.');
+        window.location.href = '/';
+    }
+
+    fetch(`/api/boards/${boardId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': localStorage.getItem("Authorization"),
+            // 'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('네트워크 상태가 좋지 않습니다.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('보드 데이터:', data);
+        document.getElementById('board-title').textContent = data.data.boardTitle;
+        document.getElementById('board-info').textContent = data.data.boardInfo;
+
+        // 컬럼 및 카드 생성 함수 호출
+        displayColumnsAndCards(data.data.kanbanDetailsResponseDtoList);
+    })
+    .catch(error => {
+        console.error('보드 정보를 불러오는 중 오류 발생:', error);
+        alert('보드 정보를 불러오는 중 오류가 발생했습니다.');
+    });
+
+    function displayColumnsAndCards(columns) {
+        const columnsContainer = document.getElementById('columns-container')
+
+        // columns가 유효한 배열인지 확인
+        if (!Array.isArray(columns)) {
+            console.error('Invalid columns data:', columns);
+            return;
+        }
+
+        columns.forEach(column => {
+            const columnElement = document.createElement('div');
+            columnElement.className = 'column';
+            columnElement.innerHTML = `
+                <h2>${column.columnTitle}</h2>
+                <a href="createCard.html" class="button">카드 생성</a>
+            `;
+
+            const cards = column.cardResponseList;
+
+            if(Array.isArray(cards)) {
+                cards.forEach(card => {
+                    const cardElement = document.createElement('div');
+                    cardElement.className = 'card';
+                    cardElement.draggable = true;
+                    cardElement.innerHTML = `
+                    <div>${card.title}</div>
+                    <div class="card-info">담당자: ${card.username ? card.username : '-'}</div>
+                    <div class="card-info">기한: ${card.endTime ? card.endTime : '-'}</div>
+                    <div class="card-info">내용: ${card.content}</div>
+                    <div class="card-info">상태: ${card.state}</div>
+                    <div class="card-info">순서: ${card.sequence}</div>
+                `;
+                    columnElement.appendChild(cardElement);
+                });
+            } else {
+                console.warn('cardResponseList is not an array:', columnData.cardResponseList);
+            }
+            columnsContainer.appendChild(columnElement);
+        });
+    }
+
+    let dragged; // 드래그 중인 카드를 저장할 변수
     document.addEventListener('drag', function(event) {
     }, false);
 
@@ -221,11 +331,11 @@
     });
 
     // 컬럼 생성 버튼 클릭 이벤트 핸들러
-    document.getElementById('addColumnButton').addEventListener('click', function() {
-        alert('컬럼 생성 페이지로 이동합니다.');
-        // 실제로 컬럼을 생성하는 로직을 추가해야 함
-        // 예를 들어 새로운 컬럼을 동적으로 추가하거나 다른 페이지로 이동하는 등의 처리 필요
-    });
+    // document.getElementById('addColumnButton').addEventListener('click', function() {
+    //     alert('컬럼 생성 페이지로 이동합니다.');
+    //     // 실제로 컬럼을 생성하는 로직을 추가해야 함
+    //     // 예를 들어 새로운 컬럼을 동적으로 추가하거나 다른 페이지로 이동하는 등의 처리 필요
+    // });
 
     // 컬럼 제목 입력 필드에서 Enter 키를 누를 때
     document.addEventListener('keydown', function(event) {
