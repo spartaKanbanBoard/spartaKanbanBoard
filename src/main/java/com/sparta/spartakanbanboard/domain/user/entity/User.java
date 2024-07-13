@@ -1,6 +1,7 @@
 package com.sparta.spartakanbanboard.domain.user.entity;
 
 import com.sparta.spartakanbanboard.domain.card.entity.Card;
+import com.sparta.spartakanbanboard.domain.cardcomment.entity.CardComment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,4 +54,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Card> cardList = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CardComment> cardCommentList = new LinkedHashSet<>();
 }

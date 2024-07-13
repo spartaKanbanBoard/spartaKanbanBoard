@@ -8,4 +8,6 @@ import lombok.Getter;
 public class ColumnResponseDto {
 
     private String columnTitle;
+    private long orderNumber;
+
 }
