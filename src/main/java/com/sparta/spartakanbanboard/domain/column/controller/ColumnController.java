@@ -44,4 +44,14 @@ public class ColumnController {
 
         return ResponseEntity.ok().body(commonResponseDto);
     }
+
+    @GetMapping("/admins/boards/{boardId}/columns")
+    public ResponseEntity<CommonResponseDto> getAllColumn(
+        @RequestParam(value = "page",defaultValue = "1") int page,
+        @RequestParam("size") int size,
+        @PathVariable long boardId) {
+
+        CommonResponseDto commonResponseDto = columnService.getAllColumn(page, size, boardId);
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
 }

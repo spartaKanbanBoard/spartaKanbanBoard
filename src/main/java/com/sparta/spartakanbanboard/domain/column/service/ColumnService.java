@@ -10,11 +10,15 @@ import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
 import com.sparta.spartakanbanboard.domain.column.repository.ColumnRepository;
 import com.sparta.spartakanbanboard.global.BusinessLogicException;
 import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
+import com.sparta.spartakanbanboard.global.dto.PageDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +36,10 @@ public class ColumnService {
             .board(board)
             .orderNumber(KanbanColumn.getCreatedNumber())
             .build();
+
+        if(!Objects.isNull(columnRepository.findByTitle(kanbanColumn.getColumnTitle()))) {
+            throw new BusinessLogicException("같은 이름의 컬럼이 존재합니다!");
+        }
 
         columnRepository.save(kanbanColumn);
 
@@ -83,6 +91,23 @@ public class ColumnService {
             .data(columnListResponseDto)
             .build();
     }
+    public CommonResponseDto getAllColumn(int page, int size, long boardId) {
+
+        Board board = boardService.findById(boardId);
+        PageDto pageDto = PageDto.builder()
+            .currentPage(page)
+            .size(size)
+            .build();
+
+        // kanbanColumnList는 현재 양방향 참조로 무한 순환참조 일어나는중
+        List<KanbanColumn> kanbanColumnList = columnRepository.findAllColumn(pageDto.toPageable());
+        List<ColumnResponseDto> responseDtoList = kanbanColumnList.stream().map(KanbanColumn::of).toList();
+        return CommonResponseDto.builder()
+            .msg("전체 컬럼 조회가 성공했습니다")
+            .data(responseDtoList)
+            .build();
+    }
+
 
     public KanbanColumn findById(long id) {
         return columnRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 컬럼이 존재하지 않습니다!"));
