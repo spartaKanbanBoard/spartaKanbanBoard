@@ -5,7 +5,8 @@ import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
 import com.sparta.spartakanbanboard.domain.column.entity.QKanbanColumn;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 public class ColumnRepositoryQueryImpl implements ColumnRepositoryQuery{
@@ -23,7 +24,14 @@ public class ColumnRepositoryQueryImpl implements ColumnRepositoryQuery{
     }
 
     @Override
-    public Slice<KanbanColumn> findAllColumn(Pageable pageable) {
-        return null;
+    public List<KanbanColumn> findAllByBoardId(long boardId ,Pageable pageable) {
+        QKanbanColumn column = QKanbanColumn.kanbanColumn;
+
+        return jpaQueryFactory.select(column)
+            .from(column)
+            .where(column.board.id.eq(boardId))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
     }
 }

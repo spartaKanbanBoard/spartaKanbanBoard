@@ -19,9 +19,6 @@ import java.util.Set;
 @Table(name = "db_kanban_column")
 public class KanbanColumn {
 
-    // TODO: 기능구현을 위해 임시로 사용, 차후 db에 저장하든 해서 프로그램 종료에도 유지되는 전역적 number 구상해보기
-    private static long createdNumber = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,14 +42,6 @@ public class KanbanColumn {
             .columnTitle(kanbanColumn.getColumnTitle())
             .orderNumber(kanbanColumn.getOrderNumber())
             .build();
-    }
-
-    public static void plusNumber(){
-        createdNumber++;
-    }
-
-    public static Long getCreatedNumber(){
-        return createdNumber;
     }
 
     public void setCard(Card card) {

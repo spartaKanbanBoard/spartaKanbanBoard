@@ -3,6 +3,7 @@ package com.sparta.spartakanbanboard.domain.cardcomment.entity;
 import com.sparta.spartakanbanboard.domain.card.entity.Card;
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.CardCommentResponseDto;
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.CreateCommentRequestDto;
+import com.sparta.spartakanbanboard.domain.cardcomment.dto.EditCommentRequestDto;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.global.entity.TimeStamped;
 import jakarta.persistence.Column;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "db_card_commment")
+@Table(name = "db_card_comment")
 public class CardComment extends TimeStamped {
 
     @Id
@@ -52,5 +53,9 @@ public class CardComment extends TimeStamped {
 
         card.setComment(cardComment);
         return cardComment;
+    }
+
+    public void editComment(EditCommentRequestDto editCommentRequestDto) {
+        this.content = editCommentRequestDto.getContent();
     }
 }
