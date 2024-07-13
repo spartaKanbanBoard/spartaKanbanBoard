@@ -46,6 +46,7 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 

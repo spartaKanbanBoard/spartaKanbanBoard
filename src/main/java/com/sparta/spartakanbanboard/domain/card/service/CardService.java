@@ -8,23 +8,35 @@ import com.sparta.spartakanbanboard.domain.card.entity.Card;
 import com.sparta.spartakanbanboard.domain.card.entity.State;
 import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
 import com.sparta.spartakanbanboard.global.security.UserDetailsImpl;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface CardService {
 
+
+    @Transactional
     CommonResponseDto<?> createCardAtKanbanColumn(Long kanbanColumnId,
-        CreateCardRequestDto requestDto, UserDetailsImpl userDetails);
+        CreateCardRequestDto requestDto, UserDetailsImpl userDetails
+    );
 
+    @Transactional(readOnly = true)
     CommonResponseDto<?> findKanbanColumnIdGetCards(Long kanbanColumnId, String username,
-        State state);
+        State state
+    );
 
+    @Transactional
     CommonResponseDto<?> editFindKanbanColumnIdAndCard(Long kanbanColumnId,
-        EditCardRequestDto editCardRequestDto, UserDetailsImpl userDetails);
+        EditCardRequestDto editCardRequestDto, UserDetailsImpl userDetails
+    );
 
+    @Transactional
     CommonResponseDto<?> moveLocationCards(Long kanbanColumnId, Long cardId,
-        MoveLocationRequestDto moveLocationRequestDto);
+        MoveLocationRequestDto moveLocationRequestDto
+    );
 
+    @Transactional
     CommonResponseDto<?> deleteFindByKanbanColumnIdAndCard(Long kanbanColumnId,
-        DeleteCardRequestDto requestDto, UserDetailsImpl userDetails);
+        DeleteCardRequestDto requestDto, UserDetailsImpl userDetails
+    );
 
     Card findById(long cardId);
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,9 +52,9 @@
 <body>
 <div class="login-container">
     <h2>로그인</h2>
-    <form action="#">
+    <form id="loginForm" th:action="@{/api/users/login}" method="post">
         <div class="input-field">
-            <input type="text" id="username" name="username" placeholder="아이디" required>
+            <input type="text" id="userName" name="userName" placeholder="아이디" required>
         </div>
         <div class="input-field">
             <input type="password" id="password" name="password" placeholder="비밀번호" required>
@@ -70,6 +70,42 @@
     function goBack() {
         window.history.back();
     }
+
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 기본 동작 방지
+
+        // 사용자명과 비밀번호 가져오기
+        var userName = document.getElementById('userName').value;
+        var password = document.getElementById('password').value;
+
+        // AJAX 요청 보내기
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/users/login', true);
+        xhr.setRequestHeader('Content-Type', 'application/json'); // 요청 헤더 설정
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // 성공적으로 요청 처리
+                    var response = JSON.parse(xhr.responseText);
+                    console.log(response); // 여기서 필요에 맞게 처리
+                    // 토큰 저장
+                    localStorage.setItem('Authorization', response.data.accessToken);
+                    localStorage.setItem('refresh', response.data.refreshToken);
+                    // 예: 로그인 성공 후 리다이렉트 등의 동작 수행
+                    window.location.href = '/mainPageAfterLogin.html'; // mainPageAfterLogin.html로 이동
+                } else {
+                    // 오류 처리
+                    console.error('로그인 실패:', xhr.status);
+                    alert("로그인실패")
+                    // 예: 오류 메시지 표시 등의 처리
+                }
+            }
+        };
+        xhr.send(JSON.stringify({
+            userName: userName,
+            password: password
+        }));
+    });
 </script>
 </body>
 </html>

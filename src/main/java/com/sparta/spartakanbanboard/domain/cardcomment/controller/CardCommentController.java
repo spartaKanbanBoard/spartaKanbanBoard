@@ -1,6 +1,7 @@
 package com.sparta.spartakanbanboard.domain.cardcomment.controller;
 
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.CreateCommentRequestDto;
+import com.sparta.spartakanbanboard.domain.cardcomment.dto.EditCommentRequestDto;
 import com.sparta.spartakanbanboard.domain.cardcomment.service.CardCommentServiceImpl;
 import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
 import com.sparta.spartakanbanboard.global.security.UserDetailsImpl;
@@ -11,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +43,18 @@ public class CardCommentController {
 	) {
 		CommonResponseDto<?> commonResponseDto = cardCommentService.getAllComments(cardId,
 			userDetails);
+
+		return ResponseEntity.ok().body(commonResponseDto);
+	}
+
+	@PutMapping
+	public ResponseEntity<?> editComment(
+		@PathVariable Long cardId,
+		@RequestBody @Valid EditCommentRequestDto editCommentRequestDto,
+		@AuthenticationPrincipal UserDetailsImpl userDetails
+	) {
+		CommonResponseDto<?> commonResponseDto = cardCommentService.editComment(cardId,
+			editCommentRequestDto, userDetails);
 
 		return ResponseEntity.ok().body(commonResponseDto);
 	}

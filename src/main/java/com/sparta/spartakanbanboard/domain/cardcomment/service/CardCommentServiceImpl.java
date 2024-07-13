@@ -7,6 +7,7 @@ import com.sparta.spartakanbanboard.domain.cardcomment.dto.CardAndCommentListRes
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.CardAndCommentResponseDto;
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.CardCommentResponseDto;
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.CreateCommentRequestDto;
+import com.sparta.spartakanbanboard.domain.cardcomment.dto.EditCommentRequestDto;
 import com.sparta.spartakanbanboard.domain.cardcomment.entity.CardComment;
 import com.sparta.spartakanbanboard.domain.cardcomment.repositroy.CardCommentRepository;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class CardCommentServiceImpl implements CardCommentService {
 	private final CardCommentRepository cardCommentRepository;
 
 	@Override
+	@Transactional
 	public CommonResponseDto<?> createCommentByCardId(Long cardId,
 		CreateCommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
 
@@ -48,6 +51,7 @@ public class CardCommentServiceImpl implements CardCommentService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public CommonResponseDto<?> getAllComments(Long cardId, UserDetailsImpl userDetails) {
 		userService.findByUserName(userDetails.getUsername());
 
@@ -70,9 +74,39 @@ public class CardCommentServiceImpl implements CardCommentService {
 	}
 
 	@Override
+	@Transactional
+	public CommonResponseDto<?> editComment(Long cardId,
+		EditCommentRequestDto editCommentRequestDto, UserDetailsImpl userDetails
+	) {
+		Card card = cardService.findById(cardId);
+		CardComment cardComment = findById(editCommentRequestDto.getCommentId());
+
+		User editingUser = userService.findByUserName(userDetails.getUsername());
+
+		if (!cardComment.getUser().getId().equals(editingUser.getId())) {
+			throw new IllegalArgumentException("본인 댓글만 수정할 수 있습니다");
+		}
+
+		cardComment.editComment(editCommentRequestDto);
+		cardCommentRepository.save(cardComment);
+
+		CardResponseDto cardResponseDto = CardResponseDto.of(card);
+		CardCommentResponseDto cardCommentResponseDto = CardCommentResponseDto.of(cardComment);
+
+		return CommonResponseDto.builder()
+			.msg("해당 댓글을 수정하였습니다")
+			.data(CardAndCommentResponseDto.builder()
+				.card(cardResponseDto)
+				.cardComment(cardCommentResponseDto)
+				.build())
+			.build();
+	}
+
+	@Override
 	public CardComment findById(Long commentId) {
 		return cardCommentRepository.findById(commentId).orElseThrow(() ->
 			new NoSuchElementException("No Such User"));
 	}
+
 
 }
