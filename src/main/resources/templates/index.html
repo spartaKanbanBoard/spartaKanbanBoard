@@ -50,22 +50,13 @@
 <div class="navbar">
     <div style="flex: 1;"></div>
     <div class="login-signup">
-        <button onclick="location.href='login.html'">로그인</button>
-        <button onclick="location.href='signup.html'">회원가입</button>
+        <a th:href="@{/login}"><button>로그인</button></a>
+        <a th:href="@{/signup}"><button>회원가입</button></a>
     </div>
 </div>
 <div class="main-container">
     <div class="main-title">spartaKanbanBoard</div>
 </div>
 
-<script>
-    function login() {
-        location.href = 'login.html';
-    }
-
-    function signup() {
-        location.href = 'signup.html';
-    }
-</script>
 </body>
 </html>

@@ -13,12 +13,12 @@
         }
         .navbar {
             display: flex;
-            justify-content: space-between; /* 우측 정렬 */
+            justify-content: space-between;
             align-items: center;
-            background-color: white; /* 상단 바 배경색 흰색으로 변경 */
-            color: #333; /* 상단 바 글자색 변경 */
+            background-color: white;
+            color: #333;
             padding: 10px 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 그림자 추가 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .navbar .logout {
             background-color: #ff4b5c;
@@ -38,14 +38,14 @@
             margin-right: 20px;
         }
         .main-container {
-            padding: 20px 50px; /* 좌우 여백을 더 넓게 설정 */
+            padding: 20px 50px;
             text-align: center;
         }
         .main-title {
             font-size: 3em;
             margin: 150px 0;
             color: #333;
-            background-color: transparent; /* 타이틀 배경색 투명으로 변경 */
+            background-color: transparent;
             padding: 20px;
             color: black;
         }
@@ -54,12 +54,12 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             justify-content: center;
-            background-color: white; /* 보드 부분 배경색 흰색으로 변경 */
+            background-color: white;
             padding: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 그림자 추가 */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .board {
-            background-color: white; /* 각 보드 배경색 흰색으로 설정 */
+            background-color: white;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -134,8 +134,28 @@
     ];
 
     function logout() {
-        alert('로그아웃 되었습니다.');
+        const token = localStorage.getItem("Authorization");
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('DELETE', '/api/users/logout', true);
+        xhr.setRequestHeader('Authorization',token);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    alert(response.msg);
+                    localStorage.removeItem('Authorization');
+                    localStorage.removeItem('refresh');
+                    window.location.href = '/';
+                } else {
+                    console.error('로그아웃 실패:', xhr.status);
+                    alert('로그아웃에 실패했습니다.');
+                }
+            }
+        };
+        xhr.send();
     }
+
 
     function redirectToCreateBoard() {
         window.location.href = 'createBoard.html';
@@ -165,9 +185,9 @@
             const boardElement = document.createElement('div');
             boardElement.className = 'board';
             boardElement.innerHTML = `
-                        <div class="board-title">${board.title}</div>
-                        <div class="board-description">${board.description}</div>
-                    `;
+                <div class="board-title">${board.title}</div>
+                <div class="board-description">${board.description}</div>
+            `;
             kanbanBoard.appendChild(boardElement);
         });
 
