@@ -15,7 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -42,17 +41,16 @@ public class Card extends TimeStamped {
     private String content;
 
     @Column
-    private Long writerId;
+    private String username;
 
     @Enumerated(EnumType.STRING)
     private State state;
 
-    //마감일자
+    @Column
     private LocalDateTime endTime;
 
     //순서이동
-    private Long sequence;
-
+    private int sequence = 0;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -66,7 +64,7 @@ public class Card extends TimeStamped {
         Card card = Card.builder()
             .title(cardRequestDto.getTitle())
             .content(cardRequestDto.getContent())
-            .writerId(cardRequestDto.getWriterId())
+            .username(cardRequestDto.getUsername())
             .state(State.BEFORE)
             .endTime(cardRequestDto.getEndTime())
             .user(user)
@@ -74,15 +72,20 @@ public class Card extends TimeStamped {
             .build();
 
         kanbanColumn.addCard(card);
+
         return card;
     }
 
     public void editCard(EditCardRequestDto editCardRequestDto, User user) {
         this.title = editCardRequestDto.getTitle();
         this.content = editCardRequestDto.getContent();
-        this.writerId = editCardRequestDto.getWriterId();
+        this.username = editCardRequestDto.getUsername();
         this.state = editCardRequestDto.getState();
         this.endTime = editCardRequestDto.getEndTime();
         this.user = user;
+    }
+
+    public void addSequence(int sequence) {
+        this.sequence = sequence;
     }
 }
