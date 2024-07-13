@@ -71,8 +71,35 @@
         // 실제로 컬럼을 생성하는 로직을 추가해야 합니다.
         // 이 부분에 컬럼 생성을 위한 JavaScript 코드를 작성할 수 있습니다.
         // 예를 들어, 입력된 컬럼 이름을 가져와서 새로운 컬럼을 생성하는 등의 작업이 필요합니다.
-        let columnName = document.getElementById('columnName').value;
-        alert(`컬럼 "${columnName}"을(를) 생성했습니다.`);
+        // AJAX 요청 보내기
+        let inputColumnName = document.getElementById('columnName').value;
+        let accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MTIzNSIsImF1dGgiOiJBRE1JTiIsImV4cCI6MTcyMDkxODQ0OCwiaWF0IjoxNzIwODgyNDQ4fQ.80htnT1Ics758SMK8uGQWhPr6VGZFcxqUjnYY5qEOx0';
+        console.log(inputColumnName);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/admins/boards/1/columns', true, 'test1235','Test1234!@' ); // 임시로 보드아이디를 1로 고정
+        xhr.setRequestHeader('Content-Type', 'application/json'); // 요청 헤더 설정
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // 성공적으로 요청 처리
+                    var response = JSON.parse(xhr.responseText);
+                    console.log(response); // 여기서 필요에 맞게 처리
+                    // 예: 로그인 성공 후 리다이렉트 등의 동작 수행
+                    window.location.href = '/board'; // board.html로 이동
+                } else {
+                    // 오류 처리
+                    console.error('생성 실패:', xhr.status);
+                    alert("생성 실패")
+                    // 예: 오류 메시지 표시 등의 처리
+                }
+            }
+        };
+        xhr.send(JSON.stringify({
+            columnTitle: inputColumnName
+        }));
+
+        alert(`컬럼 "${inputColumnName}"을(를) 생성했습니다.`);
         // 실제 동작을 위해서는 서버 측 코드와 연결하여 데이터를 저장하거나 다음 동작을 수행할 수 있습니다.
     });
 </script>

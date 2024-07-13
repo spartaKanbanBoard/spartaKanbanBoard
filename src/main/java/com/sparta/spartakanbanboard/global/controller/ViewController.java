@@ -20,4 +20,9 @@ public class ViewController {
     public String getMainPageAfterLogin() {
         return "mainPageAfterLogin"; // Thymeleaf 템플릿의 경로와 이름 (예: templates/mainPageAfterLogin.html)
     }
+
+    @GetMapping("/createColumn.html")
+    public String getCreateColumn(){
+        return "createColumn.html";
+    }
 }
