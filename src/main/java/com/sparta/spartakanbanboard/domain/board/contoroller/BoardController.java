@@ -5,6 +5,7 @@ import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteRequestDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardResponseDto;
+import com.sparta.spartakanbanboard.domain.board.dto.UserRoleResponseDto;
 import com.sparta.spartakanbanboard.domain.board.entity.Board;
 import com.sparta.spartakanbanboard.domain.board.service.BoardService;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
@@ -149,6 +150,21 @@ public class BoardController {
         CommonResponseDto commonResponseDto = CommonResponseDto.builder()
             .msg("보드 조회 완료 !")
             .data(boardDetailsResponseDto)
+            .build();
+
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
+
+    @GetMapping("/users/current")
+    public ResponseEntity<?> getCurrentUser(
+        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl
+    ) {
+        User user = userDetailsImpl.getUser();
+        UserRoleResponseDto userRoleResponseDto = boardService.getCurrentUser(user);
+
+        CommonResponseDto commonResponseDto = CommonResponseDto.builder()
+            .msg("유저 role 정보 조회 완료!")
+            .data(userRoleResponseDto)
             .build();
 
         return ResponseEntity.ok().body(commonResponseDto);

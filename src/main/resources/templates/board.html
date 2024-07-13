@@ -76,6 +76,65 @@
             justify-content: center;
             align-items: center;
         }
+        .modal {
+            display: none; /* 기본적으로 숨김 */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .modal-header h2 {
+            margin: 0;
+        }
+        .modal-body {
+            padding: 10px 0;
+        }
+        .modal-body label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .modal-body input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 8px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .modal-footer {
+            text-align: right;
+            padding-top: 10px;
+        }
+        .modal-footer .button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -89,6 +148,7 @@
         <button class="button" onclick="logout()">로그아웃</button>
         <button id="editButton" class="button">컬럼 수정</button>
         <a href="createColumn.html" class="button">컬럼 생성</a>
+        <button class="button" onclick="openInviteModal()">초대하기</button>
     </div>
 </div>
 
@@ -149,7 +209,24 @@
 </div>
 <!--</div>-->
 
+<!-- 초대하기 모달 -->
+<div id="inviteModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>사용자 초대</h2>
+            <span class="close-button" onclick="closeInviteModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <label for="inviteUsers">사용자명 입력:</label>
+            <input type="text" id="inviteUsers" placeholder="초대할 사용자명을 쉼표로 구분하여 입력하세요">
+        </div>
+        <div class="modal-footer">
+            <button class="button" onclick="inviteUsers()">초대</button>
+        </div>
+    </div>
+</div>
 <script>
+
     function goBack() {
         window.history.back();
     }
@@ -250,6 +327,61 @@
             columnsContainer.appendChild(columnElement);
         });
     }
+
+    // 모달 열기
+    function openInviteModal() {
+        document.getElementById('inviteModal').style.display = 'block';
+    }
+
+    // 모달 닫기
+    function closeInviteModal() {
+        document.getElementById('inviteModal').style.display = 'none';
+    }
+
+    // 초대하기 함수
+    function inviteUsers() {
+        const invitedUsersInput = document.getElementById('inviteUsers').value;
+        const invitedUsers = invitedUsersInput.split(',').map(username => username.trim());
+
+        // DTO 배열 생성
+        const BoardInviteRequestDto = invitedUsers.map(username => ({
+            username: username
+        }));
+
+        console.log(BoardInviteRequestDto)
+        console.log(JSON.stringify(BoardInviteRequestDto))
+
+        fetch(`/api/admins/boards/${boardId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem("Authorization"),
+            },
+            body: JSON.stringify(BoardInviteRequestDto)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('초대 요청이 실패했습니다.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert('초대가 성공적으로 완료되었습니다.');
+            closeInviteModal();
+        })
+        .catch(error => {
+            console.error('초대 요청 중 오류 발생:', error);
+            alert('초대 요청이 실패했습니다.');
+        });
+    }
+
+
+
+    //
+    //
+    //
+    // 여기까지 보드조회 및 초대하기 구현
+    // 여기 이후로 작업 하시면 됩니다
 
     let dragged; // 드래그 중인 카드를 저장할 변수
     document.addEventListener('drag', function(event) {

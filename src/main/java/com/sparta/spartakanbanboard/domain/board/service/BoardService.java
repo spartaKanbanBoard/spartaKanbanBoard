@@ -6,6 +6,7 @@ import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.KanbanDetailsResponseDto;
+import com.sparta.spartakanbanboard.domain.board.dto.UserRoleResponseDto;
 import com.sparta.spartakanbanboard.domain.board.entity.Board;
 import com.sparta.spartakanbanboard.domain.board.entity.UserBoardMatcher;
 import com.sparta.spartakanbanboard.domain.board.repository.BoardRepository;
@@ -156,5 +157,16 @@ public class BoardService {
 
         return matcher.stream()
             .anyMatch(ub -> ub.getBoard().equals(board));
+    }
+
+    public UserRoleResponseDto getCurrentUser(User user) {
+        User curUser = userService.findByUserId(user.getId());
+
+        if(curUser.getUserRole().equals(UserRole.ADMIN)) {
+            return UserRoleResponseDto.builder().userRole("admin").build();
+        } else{
+            return UserRoleResponseDto.builder().userRole("user").build();
+        }
+
     }
 }

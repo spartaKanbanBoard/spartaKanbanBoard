@@ -152,15 +152,6 @@
         window.location.href = 'createBoard.html';
     }
 
-    function createBoardAbove() {
-        const newBoard = {
-            title: `New Board ${boardsData.length + 1}`,
-            description: `This is the description of New Board ${boardsData.length + 1}.`
-        };
-        boardsData.splice(2, 0, newBoard); // 3번 보드 바로 위에 추가
-        goToPage(currentPage);
-    }
-
     async function loadMoreCards() {
         if (isLoading) return;
         isLoading = true;
@@ -202,9 +193,6 @@
                 })
                 .then(data => {
                     console.log('보드 데이터:', data);
-                    // document.getElementById('board-title').textContent = data.title;
-                    // document.getElementById('board-description').textContent = data.description;
-                    // kanbanBoard.innerHTML = '';
                     data.data.content.forEach(board => {
                         const boardElement = document.createElement('div');
                         boardElement.className = 'board';

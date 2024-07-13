@@ -32,4 +32,14 @@ public class ViewController {
     public String getCreateBoard() {
         return "createBoard";
     }
+
+    @GetMapping("/mainPageAfterLoginForUser.html")
+    public String getMainPageAfterLoginForUser() {
+        return "mainPageAfterLoginForUser";
+    }
+
+    @GetMapping("/checkCurrentUser.html")
+    public String getCheckCurrentUser() {
+        return "checkCurrentUser";
+    }
 }
