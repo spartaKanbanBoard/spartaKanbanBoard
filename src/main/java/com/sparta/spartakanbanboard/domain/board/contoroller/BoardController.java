@@ -1,5 +1,6 @@
 package com.sparta.spartakanbanboard.domain.board.contoroller;
 
+import com.sparta.spartakanbanboard.domain.board.dto.BoardDetailsResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteRequestDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
@@ -12,6 +13,7 @@ import com.sparta.spartakanbanboard.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.UserDatabase;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -131,6 +133,22 @@ public class BoardController {
         CommonResponseDto commonResponseDto = CommonResponseDto.builder()
             .msg("보드에 유저들 초대 완료 !")
             .data(boardInviteResponseDto)
+            .build();
+
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
+
+    @GetMapping("/boards/{boardId}")
+    public ResponseEntity<?> getMyBoard(
+        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+        @PathVariable("boardId") long boardId
+    ) {
+        User user = userDetailsImpl.getUser();
+        BoardDetailsResponseDto boardDetailsResponseDto = boardService.getMyBoard(user, boardId);
+
+        CommonResponseDto commonResponseDto = CommonResponseDto.builder()
+            .msg("보드 조회 완료 !")
+            .data(boardDetailsResponseDto)
             .build();
 
         return ResponseEntity.ok().body(commonResponseDto);
