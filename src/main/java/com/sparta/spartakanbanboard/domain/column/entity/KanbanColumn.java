@@ -55,7 +55,7 @@ public class KanbanColumn {
         return createdNumber;
     }
 
-    public void addCard(Card card) {
+    public void setCard(Card card) {
         cardList.add(card);
     }
 

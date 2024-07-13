@@ -34,6 +34,7 @@ public class ColumnService {
             .build();
 
         columnRepository.save(kanbanColumn);
+
         ColumnResponseDto responseDto = KanbanColumn.of(kanbanColumn);
 
         KanbanColumn.plusNumber();

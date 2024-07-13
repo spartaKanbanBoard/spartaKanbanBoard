@@ -21,8 +21,9 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     Card findTopByKanbanColumnIdOrderBySequenceDesc(Long kanbanColumnId);
 
-
     Optional<Card> findByIdAndKanbanColumnId(Long cardId, Long kanbanColumnId);
 
     List<Card> findAllByKanbanColumnId(Long kanbanColumnId);
+
+    List<Card> findAllByKanbanColumnIdAndSequenceGreaterThan(Long kanbanColumnId, int deletedCardSequence);
 }
