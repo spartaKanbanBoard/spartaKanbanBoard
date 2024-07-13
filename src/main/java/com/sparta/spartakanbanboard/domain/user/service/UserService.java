@@ -24,7 +24,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final TokenService tokenService;
+//    private final TokenService tokenService;
     private final JwtUtil jwtUtil;
     @Value("${ADMIN_TOKEN}")
     String adminToken;
@@ -73,7 +73,7 @@ public class UserService {
 
         // redis 에 토큰 저장 및 유저 상태 변경
         String substringRefreshToken = refreshToken.substring(JwtUtil.BEARER_PREFIX.length());
-        tokenService.saveRefreshToken(user.getUserName(), substringRefreshToken);
+//        tokenService.saveRefreshToken(user.getUserName(), substringRefreshToken);
 
         //유저 상태 변경
         user.updateRefreshToken(substringRefreshToken);
@@ -99,7 +99,7 @@ public class UserService {
     public CommonResponseDto<?> logout(User user) {
         user.logout();
         user.updateRefreshToken(null);
-        tokenService.deleteRefreshToken(user.getUserName());
+//        tokenService.deleteRefreshToken(user.getUserName());
         userRepository.save(user);
 
         return CommonResponseDto.builder()
