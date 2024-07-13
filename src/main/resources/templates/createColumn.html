@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컬럼 생성</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1em;
+            margin-right: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>컬럼 생성</h1>
+    <form id="createColumnForm">
+        <label for="columnName">컬럼 이름:</label>
+        <input type="text" id="columnName" name="columnName" required>
+        <div class="button-container">
+            <button type="submit" class="button">컬럼 생성</button>
+            <a href="board.html" class="button">돌아가기</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('createColumnForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        // 실제로 컬럼을 생성하는 로직을 추가해야 합니다.
+        // 이 부분에 컬럼 생성을 위한 JavaScript 코드를 작성할 수 있습니다.
+        // 예를 들어, 입력된 컬럼 이름을 가져와서 새로운 컬럼을 생성하는 등의 작업이 필요합니다.
+        let columnName = document.getElementById('columnName').value;
+        alert(`컬럼 "${columnName}"을(를) 생성했습니다.`);
+        // 실제 동작을 위해서는 서버 측 코드와 연결하여 데이터를 저장하거나 다음 동작을 수행할 수 있습니다.
+    });
+</script>
+
+</body>
+</html>
