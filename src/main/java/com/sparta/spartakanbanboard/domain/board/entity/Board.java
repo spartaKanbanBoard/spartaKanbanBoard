@@ -1,5 +1,6 @@
 package com.sparta.spartakanbanboard.domain.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
 import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
 import com.sparta.spartakanbanboard.global.entity.TimeStamped;
@@ -38,10 +39,12 @@ public class Board extends TimeStamped {
     private String boardInfo;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @Singular("userBoardMatchersList")
     private List<UserBoardMatcher> userBoardMatchersList = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @Singular("kanbanColumn")
     private List<KanbanColumn> kanbanColumn = new ArrayList<>();
 

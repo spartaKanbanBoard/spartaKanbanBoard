@@ -134,7 +134,7 @@ public class BoardService {
         List<KanbanDetailsResponseDto> responseDtoList = kanbanColumnList.stream()
             .map(KanbanDetailsResponseDto::of).toList();
 
-        return BoardDetailsResponseDto.of(responseDtoList);
+        return BoardDetailsResponseDto.of(board,responseDtoList);
     }
 
     public Board findById(long id) {
