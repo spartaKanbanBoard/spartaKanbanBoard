@@ -2,20 +2,26 @@ package com.sparta.spartakanbanboard.domain.card.entity;
 
 import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
 import com.sparta.spartakanbanboard.domain.card.dto.EditCardRequestDto;
+import com.sparta.spartakanbanboard.domain.cardcomment.entity.CardComment;
 import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.global.entity.TimeStamped;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,16 +55,18 @@ public class Card extends TimeStamped {
     @Column
     private LocalDateTime endTime;
 
-    //순서이동
     private int sequence = 0;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    User user;
+    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "kanban_Column_id")
-    KanbanColumn kanbanColumn;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "kanban_column_id")
+    private KanbanColumn kanbanColumn;
+
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CardComment> cardCommentList = new LinkedHashSet<>();
 
     public static Card of(CreateCardRequestDto cardRequestDto, User user, KanbanColumn kanbanColumn) {
         Card card = Card.builder()
@@ -71,7 +79,7 @@ public class Card extends TimeStamped {
             .kanbanColumn(kanbanColumn)
             .build();
 
-        kanbanColumn.addCard(card);
+        kanbanColumn.setCard(card);
 
         return card;
     }
@@ -89,4 +97,7 @@ public class Card extends TimeStamped {
         this.sequence = sequence;
     }
 
+    public void setComment(CardComment cardComment) {
+        cardCommentList.add(cardComment);
+    }
 }

@@ -7,24 +7,24 @@ import com.sparta.spartakanbanboard.domain.card.dto.MoveLocationRequestDto;
 import com.sparta.spartakanbanboard.domain.card.entity.Card;
 import com.sparta.spartakanbanboard.domain.card.entity.State;
 import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
+import com.sparta.spartakanbanboard.global.security.UserDetailsImpl;
 
 public interface CardService {
 
-
     CommonResponseDto<?> createCardAtKanbanColumn(Long kanbanColumnId,
-        CreateCardRequestDto requestDto);
+        CreateCardRequestDto requestDto, UserDetailsImpl userDetails);
 
     CommonResponseDto<?> findKanbanColumnIdGetCards(Long kanbanColumnId, String username,
         State state);
 
     CommonResponseDto<?> editFindKanbanColumnIdAndCard(Long kanbanColumnId,
-        EditCardRequestDto editCardRequestDto);
+        EditCardRequestDto editCardRequestDto, UserDetailsImpl userDetails);
 
     CommonResponseDto<?> moveLocationCards(Long kanbanColumnId, Long cardId,
         MoveLocationRequestDto moveLocationRequestDto);
 
     CommonResponseDto<?> deleteFindByKanbanColumnIdAndCard(Long kanbanColumnId,
-        DeleteCardRequestDto requestDto);
+        DeleteCardRequestDto requestDto, UserDetailsImpl userDetails);
 
     Card findById(long cardId);
 }
