@@ -59,11 +59,11 @@ public class Card extends TimeStamped {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "kanban_column_id")
-    private KanbanColumn kanbanColumn;
+    @JoinColumn(name = "kanban_Column_id")
+    KanbanColumn kanbanColumn;
 
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CardComment> cardCommentList = new LinkedHashSet<>();
