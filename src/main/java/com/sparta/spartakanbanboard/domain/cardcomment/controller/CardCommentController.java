@@ -20,24 +20,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/cards/{cardId}/comments")
 public class CardCommentController {
 
-    private final CardCommentServiceImpl cardCommentService;
+	private final CardCommentServiceImpl cardCommentService;
 
-    @PostMapping
-    public ResponseEntity<?> createCommentByCardId(
-        @PathVariable Long cardId,
-        @RequestBody @Valid CreateCommentRequestDto commentRequestDto,
-        @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        CommonResponseDto<?> commonResponseDto = cardCommentService.createCommentByCardId(cardId,
-            commentRequestDto, userDetails);
+	@PostMapping
+	public ResponseEntity<?> createCommentByCardId(
+		@PathVariable Long cardId,
+		@RequestBody @Valid CreateCommentRequestDto commentRequestDto,
+		@AuthenticationPrincipal UserDetailsImpl userDetails
+	) {
+		CommonResponseDto<?> commonResponseDto = cardCommentService.createCommentByCardId(cardId,
+			commentRequestDto, userDetails);
 
-        return ResponseEntity.ok().body(commonResponseDto);
-    }
+		return ResponseEntity.ok().body(commonResponseDto);
+	}
 
-    @GetMapping
-    public ResponseEntity<?> getAllComments(@PathVariable Long cardId) {
-        CommonResponseDto<?> commonResponseDto = cardCommentService.getAllComments(cardId);
+	@GetMapping
+	public ResponseEntity<?> getAllComments(
+		@PathVariable Long cardId,
+		@AuthenticationPrincipal UserDetailsImpl userDetails
+	) {
+		CommonResponseDto<?> commonResponseDto = cardCommentService.getAllComments(cardId,
+			userDetails);
 
-        return ResponseEntity.ok().body(commonResponseDto);
-    }
+		return ResponseEntity.ok().body(commonResponseDto);
+	}
 }

@@ -36,10 +36,10 @@ public class CardCommentServiceImpl implements CardCommentService {
 		CardComment cardComment = CardComment.of(commentRequestDto, user, card);
 		cardCommentRepository.save(cardComment);
 
-		CardResponseDto cardResponseDto = CardResponseDto.of(card);
-		CardCommentResponseDto cardCommentResponseDto = CardCommentResponseDto.of(cardComment);
-		CardAndCommentResponseDto cardAndCommentResponseDto = CardAndCommentResponseDto.of(
-			cardResponseDto, cardCommentResponseDto);
+		CardAndCommentResponseDto cardAndCommentResponseDto = CardAndCommentResponseDto.builder()
+			.card(CardResponseDto.of(card))
+			.cardComment(CardCommentResponseDto.of(cardComment))
+			.build();
 
 		return CommonResponseDto.builder()
 			.msg("댓글 생성이 완료되었습니다.")
@@ -48,25 +48,24 @@ public class CardCommentServiceImpl implements CardCommentService {
 	}
 
 	@Override
-	public CommonResponseDto<?> getAllComments(Long cardId) {
+	public CommonResponseDto<?> getAllComments(Long cardId, UserDetailsImpl userDetails) {
+		userService.findByUserName(userDetails.getUsername());
+
 		Card card = cardService.findById(cardId);
 		CardResponseDto cardResponseDto = CardResponseDto.of(card);
 
-		List<CardComment> cardCommentList = cardCommentRepository.findAllByCardIdOrderByCreatedAtDesc(
-			cardId);
-
-		List<CardCommentResponseDto> cardCommentResponseDtoList = cardCommentList.stream()
+		List<CardCommentResponseDto> cardCommentResponseDtoList = cardCommentRepository
+			.findAllByCardIdOrderByCreatedAtDesc(cardId)
+			.stream()
 			.map(CardCommentResponseDto::new)
 			.toList();
 
-		CardAndCommentListResponseDto cardAndCommentListResponseDto = CardAndCommentListResponseDto.builder()
-			.card(cardResponseDto)
-			.commentList(cardCommentResponseDtoList)
-			.build();
-
 		return CommonResponseDto.builder()
 			.msg("해당 카드의 댓글을 모두 조회합니다.")
-			.data(cardAndCommentListResponseDto)
+			.data(CardAndCommentListResponseDto.builder()
+				.card(cardResponseDto)
+				.commentList(cardCommentResponseDtoList)
+				.build())
 			.build();
 	}
 
