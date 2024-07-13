@@ -41,7 +41,7 @@ public class Board extends TimeStamped {
     @Singular("userBoardMatchersList")
     private List<UserBoardMatcher> userBoardMatchersList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Singular("kanbanColumn")
     private List<KanbanColumn> kanbanColumn = new ArrayList<>();
 

@@ -11,4 +11,7 @@ public interface ColumnRepository extends JpaRepository<KanbanColumn, Long>, Col
 
     @Query("select distinct kc from KanbanColumn kc left join fetch kc.cardList c where kc.board.id = :boardId")
     List<KanbanColumn> findKanbanColumnsByBoard(@Param("boardId") Long boardId);
+
+    @Query("SELECT MAX(k.orderNumber) FROM KanbanColumn k")
+    Long findMaxOrderNumber();
 }
