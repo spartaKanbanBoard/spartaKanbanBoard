@@ -1,9 +1,11 @@
 package com.sparta.spartakanbanboard.domain.board.contoroller;
 
+import com.sparta.spartakanbanboard.domain.board.dto.BoardDetailsResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteRequestDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardResponseDto;
+import com.sparta.spartakanbanboard.domain.board.dto.UserRoleResponseDto;
 import com.sparta.spartakanbanboard.domain.board.entity.Board;
 import com.sparta.spartakanbanboard.domain.board.service.BoardService;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
@@ -12,6 +14,7 @@ import com.sparta.spartakanbanboard.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.UserDatabase;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,7 +36,7 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping("/admins/boards")
-    public ResponseEntity<CommonResponseDto<BoardResponseDto>> createBoard(
+    public ResponseEntity<?> createBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
         @Valid @RequestBody BoardRequestDto boardRequestDto) {
 
@@ -49,7 +52,7 @@ public class BoardController {
     }
 
     @GetMapping("/admins/boards")
-    public ResponseEntity<CommonResponseDto<Slice<Board>>> getBoardList
+    public ResponseEntity<?> getBoardList
         (
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
             @RequestParam(value = "page",defaultValue = "1") int page,
@@ -69,7 +72,7 @@ public class BoardController {
     }
 
     @GetMapping("/boards")
-    public ResponseEntity<CommonResponseDto<Slice<Board>>> getMyBoardList
+    public ResponseEntity<?> getMyBoardList
         (
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
             @RequestParam(value = "page",defaultValue = "1") int page,
@@ -88,7 +91,7 @@ public class BoardController {
     }
 
     @PutMapping("/admins/boards/{boardId}")
-    public ResponseEntity<CommonResponseDto<BoardResponseDto>> updateBoard(
+    public ResponseEntity<?> updateBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
         @PathVariable("boardId") long boardId,
         @RequestBody BoardRequestDto boardRequestDto
@@ -105,7 +108,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/admins/boards/{boardId}")
-    public ResponseEntity<CommonResponseDto> deleteBoard(
+    public ResponseEntity<?> deleteBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
         @PathVariable("boardId") long boardId
     ) {
@@ -120,7 +123,7 @@ public class BoardController {
     }
 
     @PostMapping("/admins/boards/{boardId}")
-    public ResponseEntity<CommonResponseDto<List<BoardInviteRequestDto>>> inviteUserToBoard(
+    public ResponseEntity<?> inviteUserToBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
         @PathVariable("boardId") long boardId,
         @RequestBody List<BoardInviteRequestDto> BoardInviteRequestDtos
@@ -131,6 +134,37 @@ public class BoardController {
         CommonResponseDto commonResponseDto = CommonResponseDto.builder()
             .msg("보드에 유저들 초대 완료 !")
             .data(boardInviteResponseDto)
+            .build();
+
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
+
+    @GetMapping("/boards/{boardId}")
+    public ResponseEntity<?> getMyBoard(
+        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+        @PathVariable("boardId") long boardId
+    ) {
+        User user = userDetailsImpl.getUser();
+        BoardDetailsResponseDto boardDetailsResponseDto = boardService.getMyBoard(user, boardId);
+
+        CommonResponseDto commonResponseDto = CommonResponseDto.builder()
+            .msg("보드 조회 완료 !")
+            .data(boardDetailsResponseDto)
+            .build();
+
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
+
+    @GetMapping("/users/current")
+    public ResponseEntity<?> getCurrentUser(
+        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl
+    ) {
+        User user = userDetailsImpl.getUser();
+        UserRoleResponseDto userRoleResponseDto = boardService.getCurrentUser(user);
+
+        CommonResponseDto commonResponseDto = CommonResponseDto.builder()
+            .msg("유저 role 정보 조회 완료!")
+            .data(userRoleResponseDto)
             .build();
 
         return ResponseEntity.ok().body(commonResponseDto);

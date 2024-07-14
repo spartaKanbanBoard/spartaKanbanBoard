@@ -1,13 +1,18 @@
 package com.sparta.spartakanbanboard.domain.board.service;
 
+import com.sparta.spartakanbanboard.domain.board.dto.BoardDetailsResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteRequestDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardInviteResponseDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardRequestDto;
 import com.sparta.spartakanbanboard.domain.board.dto.BoardResponseDto;
+import com.sparta.spartakanbanboard.domain.board.dto.KanbanDetailsResponseDto;
+import com.sparta.spartakanbanboard.domain.board.dto.UserRoleResponseDto;
 import com.sparta.spartakanbanboard.domain.board.entity.Board;
 import com.sparta.spartakanbanboard.domain.board.entity.UserBoardMatcher;
 import com.sparta.spartakanbanboard.domain.board.repository.BoardRepository;
 import com.sparta.spartakanbanboard.domain.board.repository.UserBoardMatcherRepository;
+import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
+import com.sparta.spartakanbanboard.domain.column.repository.ColumnRepository;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
 import com.sparta.spartakanbanboard.domain.user.entity.UserRole;
 import com.sparta.spartakanbanboard.domain.user.service.UserService;
@@ -15,6 +20,7 @@ import com.sparta.spartakanbanboard.global.BusinessLogicException;
 import com.sparta.spartakanbanboard.global.dto.PageDto;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -27,6 +33,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserService userService;
     private final UserBoardMatcherRepository userBoardMatcherRepository;
+    private final ColumnRepository columnRepository;
 
     public BoardResponseDto createBoard(User user, BoardRequestDto boardRequestDto) {
         User curUser = userService.findByUserId(user.getId());
@@ -102,15 +109,33 @@ public class BoardService {
 
         for(BoardInviteRequestDto requestDto : boardInviteRequestDtos) {
             User invitedUser = userService.findByUserName(requestDto.getUsername());
-            UserBoardMatcher userBoardMatcher = UserBoardMatcher.builder()
-                .board(board)
-                .user(invitedUser)
-                .build();
 
-            userBoardMatcherRepository.save(userBoardMatcher);
+            if(!isInvitedUser(invitedUser,board)) {
+                UserBoardMatcher userBoardMatcher = UserBoardMatcher.builder()
+                    .board(board)
+                    .user(invitedUser)
+                    .build();
+
+                userBoardMatcherRepository.save(userBoardMatcher);
+            }
         }
 
         return BoardInviteResponseDto.of(boardInviteRequestDtos);
+    }
+
+    public BoardDetailsResponseDto getMyBoard(User user, long boardId) {
+        User curUser = userService.findByUserId(user.getId());
+        Board board = findById(boardId);
+
+        if(!isInvitedUser(curUser,board)) {
+            throw new BusinessLogicException("보드에 초대된 유저가 아닙니다.");
+        }
+
+        List<KanbanColumn> kanbanColumnList = columnRepository.findKanbanColumnsByBoard(board.getId());
+        List<KanbanDetailsResponseDto> responseDtoList = kanbanColumnList.stream()
+            .map(KanbanDetailsResponseDto::of).toList();
+
+        return BoardDetailsResponseDto.of(board,responseDtoList);
     }
 
     public Board findById(long id) {
@@ -121,9 +146,27 @@ public class BoardService {
         return board;
     }
 
-    public void checkADMINUser(User user) {
+    private void checkADMINUser(User user) {
         if(!UserRole.ADMIN.equals(user.getUserRole())) {
             throw new BusinessLogicException("해당 기능은 ADMIN만 사용할 수 있습니다.");
         }
+    }
+
+    private boolean isInvitedUser(User user,Board board) {
+        List<UserBoardMatcher> matcher = userBoardMatcherRepository.findUserBoardMatcherByUser(user);
+
+        return matcher.stream()
+            .anyMatch(ub -> ub.getBoard().equals(board));
+    }
+
+    public UserRoleResponseDto getCurrentUser(User user) {
+        User curUser = userService.findByUserId(user.getId());
+
+        if(curUser.getUserRole().equals(UserRole.ADMIN)) {
+            return UserRoleResponseDto.builder().userRole("admin").build();
+        } else{
+            return UserRoleResponseDto.builder().userRole("user").build();
+        }
+
     }
 }
