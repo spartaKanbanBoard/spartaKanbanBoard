@@ -7,6 +7,7 @@ import com.sparta.spartakanbanboard.domain.cardcomment.dto.CardAndCommentListRes
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.CardAndCommentResponseDto;
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.CardCommentResponseDto;
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.CreateCommentRequestDto;
+import com.sparta.spartakanbanboard.domain.cardcomment.dto.DeleteCommentRequestDto;
 import com.sparta.spartakanbanboard.domain.cardcomment.dto.EditCommentRequestDto;
 import com.sparta.spartakanbanboard.domain.cardcomment.entity.CardComment;
 import com.sparta.spartakanbanboard.domain.cardcomment.repositroy.CardCommentRepository;
@@ -16,6 +17,7 @@ import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
 import com.sparta.spartakanbanboard.global.security.UserDetailsImpl;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +47,7 @@ public class CardCommentServiceImpl implements CardCommentService {
 			.build();
 
 		return CommonResponseDto.builder()
-			.msg("댓글 생성이 완료되었습니다.")
+			.msg("Comment creation is complete.")
 			.data(cardAndCommentResponseDto)
 			.build();
 	}
@@ -65,7 +67,7 @@ public class CardCommentServiceImpl implements CardCommentService {
 			.toList();
 
 		return CommonResponseDto.builder()
-			.msg("해당 카드의 댓글을 모두 조회합니다.")
+			.msg("Retrieving all comments for that card.")
 			.data(CardAndCommentListResponseDto.builder()
 				.card(cardResponseDto)
 				.commentList(cardCommentResponseDtoList)
@@ -83,8 +85,8 @@ public class CardCommentServiceImpl implements CardCommentService {
 
 		User editingUser = userService.findByUserName(userDetails.getUsername());
 
-		if (!cardComment.getUser().getId().equals(editingUser.getId())) {
-			throw new IllegalArgumentException("본인 댓글만 수정할 수 있습니다");
+		if (!Objects.equals(cardComment.getUser().getId(), editingUser.getId())) {
+			throw new IllegalArgumentException("You are not authorized to edit this comment");
 		}
 
 		cardComment.editComment(editCommentRequestDto);
@@ -94,7 +96,7 @@ public class CardCommentServiceImpl implements CardCommentService {
 		CardCommentResponseDto cardCommentResponseDto = CardCommentResponseDto.of(cardComment);
 
 		return CommonResponseDto.builder()
-			.msg("해당 댓글을 수정하였습니다")
+			.msg("The comment has been edited successfully")
 			.data(CardAndCommentResponseDto.builder()
 				.card(cardResponseDto)
 				.cardComment(cardCommentResponseDto)
@@ -103,10 +105,30 @@ public class CardCommentServiceImpl implements CardCommentService {
 	}
 
 	@Override
-	public CardComment findById(Long commentId) {
-		return cardCommentRepository.findById(commentId).orElseThrow(() ->
-			new NoSuchElementException("No Such User"));
+	@Transactional
+	public CommonResponseDto<?> deleteComment(Long cardId,
+		DeleteCommentRequestDto deleteCommentRequestDto, UserDetailsImpl userDetails
+	) {
+		cardService.findById(cardId);
+		CardComment commentToDelete = findById(deleteCommentRequestDto.getCommentId());
+
+		User deleteUser = userService.findByUserName(userDetails.getUsername());
+
+		if (!Objects.equals(commentToDelete.getUser().getId(), deleteUser.getId())) {
+			throw new IllegalArgumentException("You are not authorized to delete this comment");
+		}
+		cardCommentRepository.delete(commentToDelete);
+
+		return CommonResponseDto.builder()
+			.msg("The comment has been deleted successfully")
+			.data("Deleted Comment ID: " + commentToDelete.getId())
+			.build();
 	}
 
+	@Override
+	public CardComment findById(Long commentId) {
+		return cardCommentRepository.findById(commentId).orElseThrow(() ->
+			new NoSuchElementException("Comment Not Found"));
+	}
 
 }

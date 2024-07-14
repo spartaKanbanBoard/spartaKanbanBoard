@@ -92,7 +92,7 @@
                     localStorage.setItem('Authorization', response.data.accessToken);
                     localStorage.setItem('refresh', response.data.refreshToken);
                     // 예: 로그인 성공 후 리다이렉트 등의 동작 수행
-                    window.location.href = '/mainPageAfterLogin.html'; // mainPageAfterLogin.html로 이동
+                    window.location.href = '/checkCurrentUser.html'; // mainPageAfterLogin.html로 이동
                 } else {
                     // 오류 처리
                     console.error('로그인 실패:', xhr.status);

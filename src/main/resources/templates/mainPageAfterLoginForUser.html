@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sparta Kanban Board</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      color: #333;
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .navbar .logout {
+      background-color: #ff4b5c;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .add-board-button {
+      background-color: #4CAF50;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      cursor: pointer;
+      font-size: 1em;
+      margin-right: 20px;
+    }
+    .main-container {
+      padding: 20px 50px;
+      text-align: center;
+    }
+    .main-title {
+      font-size: 3em;
+      margin: 150px 0;
+      color: #333;
+      background-color: transparent;
+      padding: 20px;
+      color: black;
+    }
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      justify-content: center;
+      background-color: white;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .board {
+      background-color: white;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .board-title {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .board-description {
+      font-size: 1em;
+      color: #666;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+    }
+    .pagination button {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 0 5px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .pagination .active {
+      background-color: #555;
+    }
+    .pagination .current-page {
+      margin: 0 10px;
+      font-size: 1.2em;
+    }
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-size: 1.2em;
+    }
+    .board-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="navbar">
+  <button class="logout" onclick="logout()">로그아웃</button>
+</div>
+<div class="main-container">
+  <div class="main-title">spartaKanbanBoard</div>
+  <div class="kanban-board" id="kanban-board">
+    <!-- 보드 내용은 JavaScript에서 동적으로 추가됩니다 -->
+  </div>
+  <button class="add-board-button" onclick="redirectToCreateBoard()">보드 생성</button>
+  <div class="loading" id="loading">Loading...</div>
+</div>
+
+<script>
+  let currentPage = 1;
+  const itemsPerPage = 6;
+  let isLoading = false;
+
+  function logout() {
+    const token = localStorage.getItem("Authorization");
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/api/users/logout', true);
+    xhr.setRequestHeader('Authorization',token);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          alert(response.msg);
+          localStorage.removeItem('Authorization');
+          localStorage.removeItem('refresh');
+          window.location.href = '/';
+        } else {
+          console.error('로그아웃 실패:', xhr.status);
+          alert('로그아웃에 실패했습니다.');
+        }
+      }
+    };
+    xhr.send();
+  }
+
+
+  function redirectToCreateBoard() {
+    window.location.href = 'createBoard.html';
+  }
+
+  async function loadMoreCards() {
+    if (isLoading) return;
+    isLoading = true;
+    try {
+      await fetchBoards(currentPage);
+      currentPage++;
+    } catch (error) {
+      console.error('Error loading more cards:', error);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      loadMoreCards();
+    }
+  }, { threshold: 1 });
+
+  observer.observe(document.getElementById('loading'));
+
+  // 초기 로드
+  loadMoreCards();
+
+  function fetchBoards(pageNumber) {
+    const kanbanBoard = document.getElementById('kanban-board');
+    fetch(`/api/boards?page=${pageNumber}&size=${itemsPerPage}&sortBy=createdAt`, {
+      method: 'GET',
+      headers: {
+        'Authorization': localStorage.getItem("Authorization"),
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('네트워크 상태가 좋지 않습니다.');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('보드 데이터:', data);
+      data.data.content.forEach(board => {
+        const boardElement = document.createElement('div');
+        boardElement.className = 'board';
+        boardElement.innerHTML = `
+                        <div id=board${board.id} class="board-title">${board.title}</div>
+                        <div class="board-description">${board.boardInfo}</div>
+                    `;
+        //보드 클릭시
+        boardElement.addEventListener('click',() => fetchBoardDetails(board.id))
+        kanbanBoard.appendChild(boardElement);
+      });
+
+
+    })
+    .catch(error => {
+      console.error('보드 정보를 불러오는 중 오류 발생:', error);
+      alert('보드 정보를 불러오는 중 오류가 발생했습니다.');
+    });
+
+  }
+
+  function fetchBoardDetails(boardId) {
+    window.location.href = `/board.html?boardId=${boardId}`;
+  }
+
+</script>
+</body>
+</html>
