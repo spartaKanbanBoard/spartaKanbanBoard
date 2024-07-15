@@ -45,4 +45,7 @@ public class ViewController {
 
     @GetMapping("/createColumn.html")
     public String getCreateColumn(@RequestParam("boardId") String boardId) { return "createColumn";}
+
+    @GetMapping("/card.html")
+    public String getCard(@RequestParam("cardId") String cardId)  {return "card";}
 }
