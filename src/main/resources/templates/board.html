@@ -323,6 +323,7 @@
                     cardElement.draggable = true;
                     cardElement.innerHTML = `
                     <div>${card.title}</div>
+                     <button class="close-button" onclick="deleteCard(${column.id}, ${card.id})">&times;</button>
                     <div class="card-info">담당자: ${card.username ? card.username : '-'}</div>
                     <div class="card-info">기한: ${card.endTime ? card.endTime : '-'}</div>
                     <div class="card-info">내용: ${card.content}</div>
