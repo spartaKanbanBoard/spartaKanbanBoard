@@ -12,33 +12,32 @@ public interface CardService {
 
 
     @Transactional
-    CommonResponseDto<?> createCardAtKanbanColumn(Long kanbanColumnId,
+    CommonResponseDto<?> createCardAtKanbanColumn(long kanbanColumnId,
         CreateCardRequestDto requestDto, UserDetailsImpl userDetails
     );
 
     @Transactional(readOnly = true)
-    CommonResponseDto<?> findKanbanColumnIdGetCards(Long kanbanColumnId, String username,
+    CommonResponseDto<?> findKanbanColumnIdGetCards(long kanbanColumnId, String username,
         State state
     );
 
     @Transactional
-    CommonResponseDto<?> editFindKanbanColumnIdAndCard(Long kanbanColumnId,
-       Long cardId, EditCardRequestDto editCardRequestDto, UserDetailsImpl userDetails
+    CommonResponseDto<?> editFindKanbanColumnIdAndCard(long kanbanColumnId,
+        long cardId, EditCardRequestDto editCardRequestDto, UserDetailsImpl userDetails
     );
-
 
     @Transactional
     CommonResponseDto<?> moveLocationByColumnId(long kanbanColumnId, long cardId,
         long targetColumnId, int moveSequence);
 
     @Transactional
-    CommonResponseDto<?> moveCardByColumnId(Long kanbanColumnId, Long cardId,
+    CommonResponseDto<?> moveCardByColumnId(long kanbanColumnId, long cardId,
         int moveSequence
     );
 
     @Transactional
-    CommonResponseDto<?> deleteFindByKanbanColumnIdAndCard(Long kanbanColumnId,
-        Long cardId, UserDetailsImpl userDetails
+    CommonResponseDto<?> deleteFindByKanbanColumnIdAndCard(long kanbanColumnId,
+        long cardId, UserDetailsImpl userDetails
     );
 
     Card findById(long cardId);
