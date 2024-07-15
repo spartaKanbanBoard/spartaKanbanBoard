@@ -399,7 +399,7 @@
     document.addEventListener('drop', function (event) {
         // 드롭 시 해당 카드를 드롭된 위치로 이동
         event.preventDefault();
-        if (event.target.className === 'column' || event.target.className === 'card') {
+        if (event.target.className === 'card') {
             event.target.style.background = '';
             if (event.target.className === 'card') {
                 // 카드 안에 드롭된 경우, 부모 요소를 대상으로 변경
@@ -564,11 +564,21 @@
         if (dropzone && dropzone.dataset.id !== draggedColumnId) {
             const draggedColumn = document.querySelector(`[data-id='${draggedColumnId}']`);
             const columnsContainer = document.getElementById('columns-container');
-            columnsContainer.insertBefore(draggedColumn, dropzone.nextSibling);
+
+            // 드래그된 컬럼과 드롭된 컬럼의 위치를 서로 교환
+            const draggedIndex = Array.from(columnsContainer.children).indexOf(draggedColumn);
+            const droppedIndex = Array.from(columnsContainer.children).indexOf(dropzone);
+
+            if (draggedIndex < droppedIndex) {
+                columnsContainer.insertBefore(draggedColumn, dropzone.nextSibling);
+            } else {
+                columnsContainer.insertBefore(draggedColumn, dropzone);
+            }
+
             draggedColumn.style.visibility = 'visible';
 
             // 드래그 앤 드롭 후 서버에 요청 보내기
-            fetch(`api/admins/boards/${boardId}/columns?baseColumn=${draggedColumnId}&targetColumn=${droppedColumnId}`, {
+            fetch(`/api/admins/boards/${boardId}/columns?baseColumn=${draggedColumnId}&targetColumn=${droppedColumnId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': localStorage.getItem("Authorization"),
