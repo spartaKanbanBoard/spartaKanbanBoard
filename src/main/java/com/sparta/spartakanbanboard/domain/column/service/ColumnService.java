@@ -148,6 +148,22 @@ public class ColumnService {
     public KanbanColumn findById(long id) {
         return columnRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 컬럼이 존재하지 않습니다!"));
     }
+
+    @Transactional
+    public CommonResponseDto updateColumn(ColumnRequestDto requestDto, long boardId, long columnId) {
+        Board board = boardService.findById(boardId);
+        KanbanColumn kanbanColumn = findById(columnId);
+
+        if (!board.getKanbanColumn().contains(kanbanColumn)) {
+            throw new BusinessLogicException("해당 보드에 들어있는 컬럼이 아닙니다");
+        }
+
+        kanbanColumn.updateTitle(requestDto.getColumnTitle());
+
+        return CommonResponseDto.builder()
+            .msg("컬럼 이름 수정이 성공했습니다")
+            .build();
+    }
 }
 
 

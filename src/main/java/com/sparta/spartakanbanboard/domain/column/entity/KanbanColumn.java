@@ -49,6 +49,10 @@ public class KanbanColumn {
         cardList.add(card);
     }
 
+    public void updateTitle(String title){
+        this.columnTitle = title;
+    }
+
     @Override
     public boolean equals(Object object) {
         KanbanColumn column = (KanbanColumn) object;
