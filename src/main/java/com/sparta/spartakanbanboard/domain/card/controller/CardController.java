@@ -1,7 +1,6 @@
 package com.sparta.spartakanbanboard.domain.card.controller;
 
 import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
-import com.sparta.spartakanbanboard.domain.card.dto.DeleteCardRequestDto;
 import com.sparta.spartakanbanboard.domain.card.dto.EditCardRequestDto;
 import com.sparta.spartakanbanboard.domain.card.dto.MoveLocationRequestDto;
 import com.sparta.spartakanbanboard.domain.card.entity.State;
@@ -52,14 +51,15 @@ public class CardController {
 		return ResponseEntity.ok().body(cardResponseDtoList);
 	}
 
-	@PutMapping
+	@PutMapping("/{cardId}")
 	public ResponseEntity<?> editFindKanbanColumnIdAndCard(
-		@PathVariable Long kanbanColumnId,
+		@PathVariable("kanbanColumnId") Long kanbanColumnId,
+		@PathVariable("cardId") Long cardId,
 		@RequestBody @Valid EditCardRequestDto requestDto,
 		@AuthenticationPrincipal UserDetailsImpl userDetails
 	) {
 		CommonResponseDto<?> commonResponseDto = cardService.editFindKanbanColumnIdAndCard(
-			kanbanColumnId, requestDto, userDetails);
+			kanbanColumnId, cardId, requestDto, userDetails);
 		return ResponseEntity.ok().body(commonResponseDto);
 	}
 
@@ -76,14 +76,14 @@ public class CardController {
 
 	}
 
-	@DeleteMapping
+	@DeleteMapping("/{cardId}")
 	public ResponseEntity<?> deleteFindByKanbanColumnIdAndCard(
-		@PathVariable Long kanbanColumnId,
-		@RequestBody @Valid DeleteCardRequestDto requestDto,
+		@PathVariable("kanbanColumnId") Long kanbanColumnId,
+		@PathVariable("cardId") Long cardId,
 		@AuthenticationPrincipal UserDetailsImpl userDetails
 	) {
 		CommonResponseDto<?> commonResponseDto = cardService.deleteFindByKanbanColumnIdAndCard(
-			kanbanColumnId, requestDto, userDetails);
+			kanbanColumnId, cardId, userDetails);
 
 		return ResponseEntity.ok().body(commonResponseDto);
 	}

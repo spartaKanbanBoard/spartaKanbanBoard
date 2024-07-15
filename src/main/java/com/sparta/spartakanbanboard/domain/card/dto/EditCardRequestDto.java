@@ -14,8 +14,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 @AllArgsConstructor
 public class EditCardRequestDto {
 
-    private Long cardId;
-
     private String username;
 
     @NotBlank
