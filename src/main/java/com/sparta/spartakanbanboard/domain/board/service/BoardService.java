@@ -11,6 +11,7 @@ import com.sparta.spartakanbanboard.domain.board.entity.Board;
 import com.sparta.spartakanbanboard.domain.board.entity.UserBoardMatcher;
 import com.sparta.spartakanbanboard.domain.board.repository.BoardRepository;
 import com.sparta.spartakanbanboard.domain.board.repository.UserBoardMatcherRepository;
+import com.sparta.spartakanbanboard.domain.column.dto.ColumnResponseDto;
 import com.sparta.spartakanbanboard.domain.column.entity.KanbanColumn;
 import com.sparta.spartakanbanboard.domain.column.repository.ColumnRepository;
 import com.sparta.spartakanbanboard.domain.user.entity.User;
@@ -18,6 +19,8 @@ import com.sparta.spartakanbanboard.domain.user.entity.UserRole;
 import com.sparta.spartakanbanboard.domain.user.service.UserService;
 import com.sparta.spartakanbanboard.global.BusinessLogicException;
 import com.sparta.spartakanbanboard.global.dto.PageDto;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -132,6 +135,9 @@ public class BoardService {
         }
 
         List<KanbanColumn> kanbanColumnList = columnRepository.findKanbanColumnsByBoard(board.getId());
+        kanbanColumnList.sort( Comparator.comparing(
+            KanbanColumn::getOrderNumber));
+
         List<KanbanDetailsResponseDto> responseDtoList = kanbanColumnList.stream()
             .map(KanbanDetailsResponseDto::of).toList();
 
