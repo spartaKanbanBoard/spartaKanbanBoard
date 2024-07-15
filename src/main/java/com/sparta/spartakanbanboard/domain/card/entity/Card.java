@@ -97,7 +97,13 @@ public class Card extends TimeStamped {
         this.sequence = sequence;
     }
 
+    public void setKanbanColumn(KanbanColumn targetColumn) {
+        this.kanbanColumn = targetColumn;
+    }
+
     public void setComment(CardComment cardComment) {
         cardCommentList.add(cardComment);
     }
+
+
 }

@@ -129,7 +129,7 @@
             margin-bottom: 8px;
         }
 
-        .modal-body input[type="text"] {
+        .modal-body input[type="text"], .modal-body select, .modal-body input[type="datetime-local"], .modal-body textarea {
             width: calc(100% - 20px);
             padding: 8px;
             font-size: 1em;
@@ -189,6 +189,35 @@
         </div>
         <div class="modal-footer">
             <button class="button" onclick="inviteUsers()">초대</button>
+        </div>
+    </div>
+</div>
+
+<!-- 카드 생성 모달 -->
+<div id="createCardModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>카드 생성</h2>
+            <span class="close-button" onclick="closeCreateCardModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <label for="cardTitle">기능명</label>
+            <input type="text" id="cardTitle" name="title" required>
+            <label for="cardStatus">카드 상태</label>
+            <select id="cardStatus" name="status" required>
+                <option value="BEFORE">진행 전</option>
+                <option value="IN_PROGRESS">진행 중</option>
+                <option value="DONE">완료</option>
+            </select>
+            <label for="cardAssignee">담당자</label>
+            <input type="text" id="cardAssignee" name="assignee">
+            <label for="cardDueDate">마감일자</label>
+            <input type="datetime-local" id="cardDueDate" name="dueDate">
+            <label for="cardContent">내용</label>
+            <textarea id="cardContent" name="content" rows="4"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button class="button" onclick="createCard()">카드 저장</button>
         </div>
     </div>
 </div>
@@ -282,7 +311,7 @@
             columnElement.dataset.id = column.id;
             columnElement.innerHTML = `
                 <h2>${column.columnTitle}</h2>
-                <a href="createCard.html" class="button">카드 생성</a>
+                <button class="button" onclick="openCreateCardModal(event)">카드 생성</button>
             `;
 
             const cards = column.cardResponseList;
@@ -294,6 +323,7 @@
                     cardElement.draggable = true;
                     cardElement.innerHTML = `
                     <div>${card.title}</div>
+                     <button class="close-button" onclick="deleteCard(${column.id}, ${card.id})">&times;</button>
                     <div class="card-info">담당자: ${card.username ? card.username : '-'}</div>
                     <div class="card-info">기한: ${card.endTime ? card.endTime : '-'}</div>
                     <div class="card-info">내용: ${card.content}</div>
@@ -356,12 +386,6 @@
             });
     }
 
-
-    //
-    //
-    //
-    // 여기까지 보드조회 및 초대하기 구현
-    // 여기 이후로 작업 하시면 됩니다
 
     let dragged; // 드래그 중인 카드를 저장할 변수
     document.addEventListener('drag', function (event) {
@@ -618,6 +642,83 @@
     //     let editButton = document.getElementById('editButton');
     //     editButton.textContent = editMode ? '변경 완료' : '컬럼 수정';
     // }
+
+    function openCreateCardModal(event) {
+        const columnElement = event.target.closest('.column');
+        selectedColumnId = columnElement.dataset.id;
+        document.getElementById('createCardModal').style.display = 'block';
+    }
+
+    function closeCreateCardModal() {
+        document.getElementById('createCardModal').style.display = 'none';
+        selectedColumnId = null;
+    }
+
+    function createCard() {
+        const cardTitle = document.getElementById('cardTitle').value.trim();
+        const cardAssignee = document.getElementById('cardAssignee').value.trim();
+        const cardDueDate = document.getElementById('cardDueDate').value.trim();
+        const cardContent = document.getElementById('cardContent').value.trim();
+
+        if (!cardTitle) {
+            alert('기능명은 필수 입력 사항입니다.');
+            return;
+        }
+
+        const cardData = {
+            title: cardTitle,
+            username: cardAssignee || null,
+            endTime: cardDueDate || null,
+            content: cardContent || null
+        };
+
+        fetch(`/api/columns/${selectedColumnId}/cards`, {
+            method: 'POST',
+            headers: {
+                'Authorization': localStorage.getItem("Authorization"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cardData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.msg === "카드 생성이 완료되었습니다.") {
+                alert(data.msg);
+                window.location.reload();
+            } else {
+                throw new Error('알 수 없는 오류가 발생했습니다.');
+            }
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+    }
+
+    function deleteCard(columnId, cardId) {
+        if (!confirm("정말 이 카드를 삭제하시겠습니까?")) {
+            return;
+        }
+
+        fetch(`/api/columns/${columnId}/cards/${cardId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': localStorage.getItem("Authorization"),
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.msg === "카드 삭제가 완료되었습니다.") {
+                alert(data.msg);
+                window.location.reload();
+            } else {
+                throw new Error('알 수 없는 오류가 발생했습니다.');
+            }
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+    }
 
     // 카드 삭제 함수
     function removeCard(button) {

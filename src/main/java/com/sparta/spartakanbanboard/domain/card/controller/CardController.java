@@ -1,9 +1,7 @@
 package com.sparta.spartakanbanboard.domain.card.controller;
 
 import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
-import com.sparta.spartakanbanboard.domain.card.dto.DeleteCardRequestDto;
 import com.sparta.spartakanbanboard.domain.card.dto.EditCardRequestDto;
-import com.sparta.spartakanbanboard.domain.card.dto.MoveLocationRequestDto;
 import com.sparta.spartakanbanboard.domain.card.entity.State;
 import com.sparta.spartakanbanboard.domain.card.service.CardServiceImpl;
 import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
@@ -32,7 +30,7 @@ public class CardController {
 
 	@PostMapping
 	public ResponseEntity<?> createCardAtKanbanColumn(
-		@PathVariable Long kanbanColumnId,
+		@PathVariable long kanbanColumnId,
 		@RequestBody @Valid CreateCardRequestDto requestDto,
 		@AuthenticationPrincipal UserDetailsImpl userDetails
 	) {
@@ -43,7 +41,7 @@ public class CardController {
 
 	@GetMapping
 	public ResponseEntity<?> findKanbanColumnIdAllCards(
-		@PathVariable Long kanbanColumnId,
+		@PathVariable long kanbanColumnId,
 		@RequestParam(required = false) String username,
 		@RequestParam(required = false) State state
 	) {
@@ -52,38 +50,52 @@ public class CardController {
 		return ResponseEntity.ok().body(cardResponseDtoList);
 	}
 
-	@PutMapping
+	@PutMapping("/{cardId}")
 	public ResponseEntity<?> editFindKanbanColumnIdAndCard(
-		@PathVariable Long kanbanColumnId,
+		@PathVariable("kanbanColumnId") long kanbanColumnId,
+		@PathVariable("cardId") long cardId,
 		@RequestBody @Valid EditCardRequestDto requestDto,
 		@AuthenticationPrincipal UserDetailsImpl userDetails
 	) {
 		CommonResponseDto<?> commonResponseDto = cardService.editFindKanbanColumnIdAndCard(
-			kanbanColumnId, requestDto, userDetails);
+			kanbanColumnId, cardId, requestDto, userDetails);
+		return ResponseEntity.ok().body(commonResponseDto);
+	}
+
+	@PatchMapping("/{cardId}/move")
+	public ResponseEntity<?> moveLocationByColumnId(
+		@PathVariable("kanbanColumnId") long kanbanColumnId,
+		@PathVariable("cardId") long cardId,
+		@RequestParam(value = "targetColumnId") long targetColumnId,
+		@RequestParam(value = "moveSequence") int moveSequence
+	) {
+		CommonResponseDto<?> commonResponseDto = cardService.moveLocationByColumnId(
+			kanbanColumnId, cardId, targetColumnId, moveSequence);
+
 		return ResponseEntity.ok().body(commonResponseDto);
 	}
 
 	@PatchMapping
-	public ResponseEntity<?> moveLocationCards(
-		@PathVariable Long kanbanColumnId,
-		@RequestParam Long cardId,
-		@RequestBody @Valid MoveLocationRequestDto moveLocationRequestDto
+	public ResponseEntity<?> moveCardByColumnId(
+		@PathVariable("kanbanColumnId") long kanbanColumnId,
+		@RequestParam(value = "cardId") long cardId,
+		@RequestParam(value = "moveSequence") int moveSequence
 	) {
-		CommonResponseDto<?> commonResponseDto = cardService.moveLocationCards(kanbanColumnId,
-			cardId, moveLocationRequestDto);
+		CommonResponseDto<?> commonResponseDto = cardService.moveCardByColumnId(kanbanColumnId,
+			cardId, moveSequence);
 
 		return ResponseEntity.ok().body(commonResponseDto);
 
 	}
 
-	@DeleteMapping
+	@DeleteMapping("/{cardId}")
 	public ResponseEntity<?> deleteFindByKanbanColumnIdAndCard(
-		@PathVariable Long kanbanColumnId,
-		@RequestBody @Valid DeleteCardRequestDto requestDto,
+		@PathVariable("kanbanColumnId") long kanbanColumnId,
+		@PathVariable("cardId") long cardId,
 		@AuthenticationPrincipal UserDetailsImpl userDetails
 	) {
 		CommonResponseDto<?> commonResponseDto = cardService.deleteFindByKanbanColumnIdAndCard(
-			kanbanColumnId, requestDto, userDetails);
+			kanbanColumnId, cardId, userDetails);
 
 		return ResponseEntity.ok().body(commonResponseDto);
 	}
