@@ -31,7 +31,7 @@ public class CardController {
 
 	@PostMapping
 	public ResponseEntity<?> createCardAtKanbanColumn(
-		@PathVariable Long kanbanColumnId,
+		@PathVariable long kanbanColumnId,
 		@RequestBody @Valid CreateCardRequestDto requestDto,
 		@AuthenticationPrincipal UserDetailsImpl userDetails
 	) {
@@ -42,7 +42,7 @@ public class CardController {
 
 	@GetMapping
 	public ResponseEntity<?> findKanbanColumnIdAllCards(
-		@PathVariable Long kanbanColumnId,
+		@PathVariable long kanbanColumnId,
 		@RequestParam(required = false) String username,
 		@RequestParam(required = false) State state
 	) {
@@ -53,8 +53,8 @@ public class CardController {
 
 	@PutMapping("/{cardId}")
 	public ResponseEntity<?> editFindKanbanColumnIdAndCard(
-		@PathVariable("kanbanColumnId") Long kanbanColumnId,
-		@PathVariable("cardId") Long cardId,
+		@PathVariable("kanbanColumnId") long kanbanColumnId,
+		@PathVariable("cardId") long cardId,
 		@RequestBody @Valid EditCardRequestDto requestDto,
 		@AuthenticationPrincipal UserDetailsImpl userDetails
 	) {
@@ -65,8 +65,8 @@ public class CardController {
 
 	@PatchMapping
 	public ResponseEntity<?> moveLocationCards(
-		@PathVariable Long kanbanColumnId,
-		@RequestParam Long cardId,
+		@PathVariable long kanbanColumnId,
+		@RequestParam long cardId,
 		@RequestBody @Valid MoveLocationRequestDto moveLocationRequestDto
 	) {
 		CommonResponseDto<?> commonResponseDto = cardService.moveLocationCards(kanbanColumnId,
@@ -78,8 +78,8 @@ public class CardController {
 
 	@DeleteMapping("/{cardId}")
 	public ResponseEntity<?> deleteFindByKanbanColumnIdAndCard(
-		@PathVariable("kanbanColumnId") Long kanbanColumnId,
-		@PathVariable("cardId") Long cardId,
+		@PathVariable("kanbanColumnId") long kanbanColumnId,
+		@PathVariable("cardId") long cardId,
 		@AuthenticationPrincipal UserDetailsImpl userDetails
 	) {
 		CommonResponseDto<?> commonResponseDto = cardService.deleteFindByKanbanColumnIdAndCard(
