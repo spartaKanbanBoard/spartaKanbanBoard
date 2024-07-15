@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 public class ColumnResponseDto {
 
+    private long id;
     private String columnTitle;
     private long orderNumber;
-
 }
