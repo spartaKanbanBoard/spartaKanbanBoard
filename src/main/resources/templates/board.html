@@ -330,11 +330,15 @@
                     <div class="card-info">상태: ${card.state}</div>
                     <div class="card-info">순서: ${card.sequence}</div>
                 `;
+                    cardElement.addEventListener('dragstart', dragStart);
+                    cardElement.addEventListener('dragover', dragOver);
+                    cardElement.addEventListener('drop', drop);
                     columnElement.appendChild(cardElement);
                 });
-            } else {
-                console.warn('cardResponseList is not an array:', columnData.cardResponseList);
             }
+            columnElement.addEventListener('dragstart', dragStart);
+            columnElement.addEventListener('dragover', dragOver);
+            columnElement.addEventListener('drop', drop);
             columnsContainer.appendChild(columnElement);
         });
     }
@@ -386,8 +390,9 @@
             });
     }
 
+    //드래그 중인 카드를 저장할 변수
+    let draggedCard;
 
-    let dragged; // 드래그 중인 카드를 저장할 변수
     document.addEventListener('drag', function (event) {
     }, false);
 
@@ -422,19 +427,19 @@
     }, false);
 
     document.addEventListener('drop', function (event) {
-        // 드롭 시 해당 카드를 드롭된 위치로 이동
         event.preventDefault();
-        if (event.target.className === 'card') {
-            event.target.style.background = '';
-            if (event.target.className === 'card') {
-                // 카드 안에 드롭된 경우, 부모 요소를 대상으로 변경
-                event.target.parentNode.insertBefore(dragged, event.target.nextSibling);
+        if (event.target.className.includes('card')) {
+            if (event.target.className.includes('card')) {
+                event.target.parentNode.insertBefore(draggedCard, event.target.nextSibling);
             } else {
-                // 컬럼에 직접 드롭된 경우
-                event.target.appendChild(dragged);
+                event.target.appendChild(draggedCard);
             }
+
+            event.target.style.background = '';
+            updateCardPosition(draggedCard);
         }
     }, false);
+
 
     // 수정 모드 체크
     let editMode = false;
@@ -502,9 +507,13 @@
                         <div class="card-info">상태: ${card.state}</div>
                         <div class="card-info">순서: ${card.sequence}</div>
                     `;
+                    cardElement.addEventListener('dragstart', dragStart);
+                    cardElement.addEventListener('dragover', dragOver);
+                    cardElement.addEventListener('drop', drop);
                     column.appendChild(cardElement);
                 })
             }
+
             columnContainer.appendChild(column);
         });
     }
@@ -553,56 +562,58 @@
 
     }
 
-    // 드래그 시작 함수
+    // 드래그 시작 시 이벤트
     function dragStart(event) {
-        event.dataTransfer.setData('text/plain', event.target.dataset.id);
+        draggedElement = event.target;
+        event.target.style.opacity = 0.5;
         event.dataTransfer.effectAllowed = 'move';
-        setTimeout(() => {
-            event.target.style.visibility = 'hidden';
-        }, 0);
+        event.dataTransfer.setData('text/plain', event.target.dataset.id);
     }
 
-    // 드래그 오버 함수
+    // 드래그 중인 요소가 다른 요소 위로 이동할 때 이벤트
     function dragOver(event) {
         event.preventDefault();
         event.dataTransfer.dropEffect = 'move';
     }
 
-    // 드롭 함수
+    // 드래그된 요소가 드롭될 때 이벤트
     function drop(event) {
         event.preventDefault();
-        const draggedColumnId = event.dataTransfer.getData('text/plain');
-        const dropzone = event.target.closest('.column');
-        const droppedColumnId = dropzone.dataset.id;
+        const targetElement = event.target.closest('.card, .column');
+        if (targetElement && targetElement !== draggedElement) {
+            const draggedId = draggedElement.dataset.id;
+            const targetId = targetElement.dataset.id;
+            const draggedColumnId = draggedElement.closest('.column').dataset.id;
+            const targetColumnId = targetElement.closest('.column').dataset.id;
 
-        if (dropzone && dropzone.dataset.id !== draggedColumnId) {
-            const draggedColumn = document.querySelector(`[data-id='${draggedColumnId}']`);
-            const columnsContainer = document.getElementById('columns-container');
-
-            // 드래그된 컬럼과 드롭된 컬럼의 위치를 서로 교환
-            const draggedIndex = Array.from(columnsContainer.children).indexOf(draggedColumn);
-            const droppedIndex = Array.from(columnsContainer.children).indexOf(dropzone);
-
-            if (draggedIndex < droppedIndex) {
-                columnsContainer.insertBefore(draggedColumn, dropzone.nextSibling);
-            } else {
-                columnsContainer.insertBefore(draggedColumn, dropzone);
+            if (draggedElement.classList.contains('card') && targetElement.classList.contains('column')) {
+                moveCardToColumn(draggedId, targetColumnId, draggedColumnId);
+            } else if (draggedElement.classList.contains('column') && targetElement.classList.contains('column')) {
+                moveColumn(draggedId, targetId);
             }
 
-            draggedColumn.style.visibility = 'visible';
-
-            // 드래그 앤 드롭 후 서버에 요청 보내기
-            fetch(`/api/admins/boards/${boardId}/columns?baseColumn=${draggedColumnId}&targetColumn=${droppedColumnId}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': localStorage.getItem("Authorization"),
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error:', error));
+            draggedElement.style.opacity = '';
         }
+    }
+
+    function moveColumn(baseId, targetId) {
+        fetch(`/api/admins/boards/${boardId}/columns?baseColumn=${baseId}&targetColumn=${targetId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': localStorage.getItem("Authorization"),
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            // alert('컬럼이 이동되었습니다.');
+            // window.location.reload();
+        })
+        .catch(error => {
+            console.error('컬럼 이동 중 오류 발생:', error);
+            alert('컬럼 이동에 실패했습니다.');
+        });
     }
 
     // 컬럼 제목 입력 필드에서 Enter 키를 누를 때
@@ -720,10 +731,32 @@
         });
     }
 
-    // 카드 삭제 함수
-    function removeCard(button) {
-        const card = button.parentElement;
-        card.remove();
+    // 카드 이동 함수
+    function moveCardToColumn(draggedColumnId, cardId, targetColumnId) { // 수정
+        const targetColumnElement = document.querySelector(`.column[data-id='${targetColumnId}']`);
+        const cardElements = targetColumnElement.querySelectorAll('.card');
+        const moveSequence = cardElements.length + 1;
+
+        fetch(`/api/columns/${draggedColumnId}/cards/${cardId}/move`, { // 수정
+            method: 'PATCH',
+            headers: {
+                'Authorization': localStorage.getItem("Authorization"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                targetColumnId: targetColumnId,
+                moveSequence: moveSequence
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('카드가 이동되었습니다.');
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('카드 이동 중 오류 발생:', error);
+            alert('카드 이동에 실패했습니다.');
+        });
     }
 </script>
 
