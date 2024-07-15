@@ -129,7 +129,7 @@
             margin-bottom: 8px;
         }
 
-        .modal-body input[type="text"] {
+        .modal-body input[type="text"], .modal-body select, .modal-body input[type="datetime-local"], .modal-body textarea {
             width: calc(100% - 20px);
             padding: 8px;
             font-size: 1em;
@@ -172,56 +172,7 @@
 
 </div>
 <div id="columns-container" style="display: flex; justify-content: space-around;">
-    <!-- 기본으로 세 개의 컬럼이 있습니다. -->
-    <!--    <div id="column1" class="column">-->
-    <!--        <h2><span id="columnTitle1">첫 번째 컬럼</span><input type="text" id="editColumnInput1" style="display: none;"></h2>-->
-    <!--        <a href="createCard.html" class="button">카드 생성</a>-->
-    <!--        <div id="card1" class="card" draggable="true">-->
-    <!--            <div>카드 1</div>-->
-    <!--            <div class="card-info">담당자: UserA</div>-->
-    <!--            <div class="card-info">마감일자: 2024-07-31</div>-->
-    <!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
-    <!--        </div>-->
-    <!--        <div id="card2" class="card" draggable="true">-->
-    <!--            <div>카드 2</div>-->
-    <!--            <div class="card-info">담당자: UserB</div>-->
-    <!--            <div class="card-info">마감일자: 2024-08-15</div>-->
-    <!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
-    <!--        </div>-->
-    <!--        <div id="card3" class="card" draggable="true">-->
-    <!--            <div>카드 3</div>-->
-    <!--            <div class="card-info">담당자: UserC</div>-->
-    <!--            <div class="card-info">마감일자: 2024-08-30</div>-->
-    <!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
-    <!--        </div>-->
-    <!--    </div>-->
 
-    <!--    <div id="column2" class="column">-->
-    <!--        <h2><span id="columnTitle2">두 번째 컬럼</span><input type="text" id="editColumnInput2" style="display: none;"></h2>-->
-    <!--        <a href="createCard.html" class="button">카드 생성</a>-->
-    <!--        <div id="card4" class="card" draggable="true">-->
-    <!--            <div>카드 4</div>-->
-    <!--            <div class="card-info">담당자: UserD</div>-->
-    <!--            <div class="card-info">마감일자: 2024-09-10</div>-->
-    <!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
-    <!--        </div>-->
-    <!--        <div id="card5" class="card" draggable="true">-->
-    <!--            <div>카드 5</div>-->
-    <!--            <div class="card-info">담당자: UserE</div>-->
-    <!--            <div class="card-info">마감일자: 2024-09-25</div>-->
-    <!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
-    <!--        </div>-->
-    <!--    </div>-->
-
-    <!--    <div id="column3" class="column">-->
-    <!--        <h2><span id="columnTitle3">세 번째 컬럼</span><input type="text" id="editColumnInput3" style="display: none;"></h2>-->
-    <!--        <a href="createCard.html" class="button">카드 생성</a>-->
-    <!--        <div id="card6" class="card" draggable="true">-->
-    <!--            <div>카드 6</div>-->
-    <!--            <div class="card-info">담당자: UserF</div>-->
-    <!--            <div class="card-info">마감일자: 2024-10-05</div>-->
-    <!--            <button class="close-button" onclick="removeCard(this)">X</button>-->
-    <!--        </div>-->
 </div>
 <!--</div>-->
 
@@ -238,6 +189,35 @@
         </div>
         <div class="modal-footer">
             <button class="button" onclick="inviteUsers()">초대</button>
+        </div>
+    </div>
+</div>
+
+<!-- 카드 생성 모달 -->
+<div id="createCardModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>카드 생성</h2>
+            <span class="close-button" onclick="closeCreateCardModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <label for="cardTitle">기능명</label>
+            <input type="text" id="cardTitle" name="title" required>
+            <label for="cardStatus">카드 상태</label>
+            <select id="cardStatus" name="status" required>
+                <option value="BEFORE">진행 전</option>
+                <option value="IN_PROGRESS">진행 중</option>
+                <option value="DONE">완료</option>
+            </select>
+            <label for="cardAssignee">담당자</label>
+            <input type="text" id="cardAssignee" name="assignee">
+            <label for="cardDueDate">마감일자</label>
+            <input type="datetime-local" id="cardDueDate" name="dueDate">
+            <label for="cardContent">내용</label>
+            <textarea id="cardContent" name="content" rows="4"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button class="button" onclick="createCard()">카드 저장</button>
         </div>
     </div>
 </div>
@@ -328,9 +308,10 @@
         columns.forEach(column => {
             const columnElement = document.createElement('div');
             columnElement.className = 'column';
+            columnElement.dataset.id = column.id;
             columnElement.innerHTML = `
                 <h2>${column.columnTitle}</h2>
-                <a href="createCard.html" class="button">카드 생성</a>
+                <button class="button" onclick="openCreateCardModal(event)">카드 생성</button>
             `;
 
             const cards = column.cardResponseList;
@@ -342,6 +323,7 @@
                     cardElement.draggable = true;
                     cardElement.innerHTML = `
                     <div>${card.title}</div>
+                     <button class="close-button" onclick="deleteCard(${column.id}, ${card.id})">&times;</button>
                     <div class="card-info">담당자: ${card.username ? card.username : '-'}</div>
                     <div class="card-info">기한: ${card.endTime ? card.endTime : '-'}</div>
                     <div class="card-info">내용: ${card.content}</div>
@@ -405,12 +387,6 @@
     }
 
 
-    //
-    //
-    //
-    // 여기까지 보드조회 및 초대하기 구현
-    // 여기 이후로 작업 하시면 됩니다
-
     let dragged; // 드래그 중인 카드를 저장할 변수
     document.addEventListener('drag', function (event) {
     }, false);
@@ -448,7 +424,7 @@
     document.addEventListener('drop', function (event) {
         // 드롭 시 해당 카드를 드롭된 위치로 이동
         event.preventDefault();
-        if (event.target.className === 'column' || event.target.className === 'card') {
+        if (event.target.className === 'card') {
             event.target.style.background = '';
             if (event.target.className === 'card') {
                 // 카드 안에 드롭된 경우, 부모 요소를 대상으로 변경
@@ -496,7 +472,7 @@
             column.draggable = editMode;
             column.dataset.id = columnData.id;
             column.innerHTML = `
-                    <div class="column-header">
+                    <div class="column-header" id="${columnData.id}">
                         <h2 class="column-title">${columnData.columnTitle}</h2>
                         <a href="createCard.html" class="button">카드 생성</a>
                     </div>
@@ -508,17 +484,17 @@
             column.addEventListener('drop', drop);
 
             if (editMode) {
-                column.querySelector('.column-title').outerHTML = `<input type="text" class="column-title" value="${columnData.columnTitle}">`;
+                column.querySelector('.column-title').outerHTML = `<input type="text" class="column-title" value="${columnData.columnTitle}" data-id="${columnData.id}">`;
             }
 
             const cards = column.cardResponseList;
 
-                if (Array.isArray(cards)) {
-                    cards.forEach(card => {
-                        const cardElement = document.createElement('div');
-                        cardElement.className = 'card';
-                        cardElement.draggable = true;
-                        cardElement.innerHTML = `
+            if (Array.isArray(cards)) {
+                cards.forEach(card => {
+                    const cardElement = document.createElement('div');
+                    cardElement.className = 'card';
+                    cardElement.draggable = true;
+                    cardElement.innerHTML = `
                         <div>${card.title}</div>
                         <div class="card-info">담당자: ${card.username ? card.username : '-'}</div>
                         <div class="card-info">기한: ${card.endTime ? card.endTime : '-'}</div>
@@ -526,9 +502,9 @@
                         <div class="card-info">상태: ${card.state}</div>
                         <div class="card-info">순서: ${card.sequence}</div>
                     `;
-                        column.appendChild(cardElement);
-                    })
-                }
+                    column.appendChild(cardElement);
+                })
+            }
             columnContainer.appendChild(column);
         });
     }
@@ -552,19 +528,29 @@
         const columnTitles = document.querySelectorAll('.column-title');
         columnTitles.forEach((input, index) => {
             columnsData[index].columnTitle = input.value;
+            let columnId = input.dataset.id;
+
+            const putData = {
+                columnTitle: input.value
+            };
+
+            fetch(`/api/admins/boards/${boardId}/columns/${columnId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': localStorage.getItem("Authorization"),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(putData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('네트워크 상태가 좋지 않습니다.');
+                    }
+                    return response.json();
+                })
+                .catch(error => console.error('Error fetching columns:', error));
         });
 
-        // 변경된 컬럼 순서 저장
-        const columnsContainer = document.getElementById('columnsContainer');
-        const columns = columnsContainer.querySelectorAll('.column');
-        const newColumnsData = [];
-        columns.forEach(column => {
-            column.draggable = false;
-            const id = column.dataset.id;
-            const name = column.querySelector('.column-title').value;
-            newColumnsData.push({ id: parseInt(id), columnTitle: name });
-        });
-        columnsData.splice(0, columnsData.length, ...newColumnsData);
     }
 
     // 드래그 시작 함수
@@ -591,16 +577,22 @@
 
         if (dropzone && dropzone.dataset.id !== draggedColumnId) {
             const draggedColumn = document.querySelector(`[data-id='${draggedColumnId}']`);
-            const columnsContainer = document.getElementById('columnsContainer');
-            // columnsContainer.insertBefore(draggedColumn, dropzone.nextSibling);
-            // draggedColumn.style.visibility = 'visible';
+            const columnsContainer = document.getElementById('columns-container');
+
+            // 드래그된 컬럼과 드롭된 컬럼의 위치를 서로 교환
+            const draggedIndex = Array.from(columnsContainer.children).indexOf(draggedColumn);
+            const droppedIndex = Array.from(columnsContainer.children).indexOf(dropzone);
+
+            if (draggedIndex < droppedIndex) {
+                columnsContainer.insertBefore(draggedColumn, dropzone.nextSibling);
+            } else {
+                columnsContainer.insertBefore(draggedColumn, dropzone);
+            }
+
+            draggedColumn.style.visibility = 'visible';
 
             // 드래그 앤 드롭 후 서버에 요청 보내기
-
-
-            console.log(draggedColumn);
-            console.log(droppedColumnId);
-            fetch( `api/admins/boards/${boardId}/columns?baseColumn=${draggedColumnId}&targetColumn=${droppedColumnId}`, {
+            fetch(`/api/admins/boards/${boardId}/columns?baseColumn=${draggedColumnId}&targetColumn=${droppedColumnId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': localStorage.getItem("Authorization"),
@@ -650,6 +642,83 @@
     //     let editButton = document.getElementById('editButton');
     //     editButton.textContent = editMode ? '변경 완료' : '컬럼 수정';
     // }
+
+    function openCreateCardModal(event) {
+        const columnElement = event.target.closest('.column');
+        selectedColumnId = columnElement.dataset.id;
+        document.getElementById('createCardModal').style.display = 'block';
+    }
+
+    function closeCreateCardModal() {
+        document.getElementById('createCardModal').style.display = 'none';
+        selectedColumnId = null;
+    }
+
+    function createCard() {
+        const cardTitle = document.getElementById('cardTitle').value.trim();
+        const cardAssignee = document.getElementById('cardAssignee').value.trim();
+        const cardDueDate = document.getElementById('cardDueDate').value.trim();
+        const cardContent = document.getElementById('cardContent').value.trim();
+
+        if (!cardTitle) {
+            alert('기능명은 필수 입력 사항입니다.');
+            return;
+        }
+
+        const cardData = {
+            title: cardTitle,
+            username: cardAssignee || null,
+            endTime: cardDueDate || null,
+            content: cardContent || null
+        };
+
+        fetch(`/api/columns/${selectedColumnId}/cards`, {
+            method: 'POST',
+            headers: {
+                'Authorization': localStorage.getItem("Authorization"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cardData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.msg === "카드 생성이 완료되었습니다.") {
+                alert(data.msg);
+                window.location.reload();
+            } else {
+                throw new Error('알 수 없는 오류가 발생했습니다.');
+            }
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+    }
+
+    function deleteCard(columnId, cardId) {
+        if (!confirm("정말 이 카드를 삭제하시겠습니까?")) {
+            return;
+        }
+
+        fetch(`/api/columns/${columnId}/cards/${cardId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': localStorage.getItem("Authorization"),
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.msg === "카드 삭제가 완료되었습니다.") {
+                alert(data.msg);
+                window.location.reload();
+            } else {
+                throw new Error('알 수 없는 오류가 발생했습니다.');
+            }
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+    }
 
     // 카드 삭제 함수
     function removeCard(button) {

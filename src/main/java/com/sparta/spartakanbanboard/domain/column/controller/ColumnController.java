@@ -54,4 +54,14 @@ public class ColumnController {
         CommonResponseDto commonResponseDto = columnService.getAllColumn(page, size, boardId);
         return ResponseEntity.ok().body(commonResponseDto);
     }
+
+    @PutMapping("/admins/boards/{boardId}/columns/{columnId}")
+    public ResponseEntity<CommonResponseDto> updateColumn(
+        @RequestBody ColumnRequestDto requestDto,
+        @PathVariable long boardId,
+        @PathVariable long columnId) {
+
+        CommonResponseDto commonResponseDto = columnService.updateColumn(requestDto, boardId,columnId);
+        return ResponseEntity.ok().body(commonResponseDto);
+    }
 }
