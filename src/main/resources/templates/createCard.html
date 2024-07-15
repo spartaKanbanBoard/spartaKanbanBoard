@@ -28,6 +28,7 @@
             margin-bottom: 5px;
         }
         .form-group input[type="text"],
+        .form-group input[type="datetime-local"],
         .form-group textarea {
             width: 100%;
             padding: 8px;
@@ -47,10 +48,10 @@
             padding: 10px 20px;
             cursor: pointer;
             font-size: 1em;
-            text-decoration: none; /* 링크 스타일 제거 */
-            display: inline-block; /* 링크를 인라인 블록 요소로 설정 */
-            border-radius: 4px; /* 버튼 모서리를 둥글게 만듭니다. */
-            margin-right: 10px; /* 버튼 사이 간격 조정 */
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 4px;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -64,15 +65,15 @@
         </div>
         <div class="form-group">
             <label for="assignee">담당자</label>
-            <input type="text" id="assignee" name="assignee" required>
+            <input type="text" id="assignee" name="assignee">
         </div>
         <div class="form-group">
             <label for="dueDate">마감일자</label>
-            <input type="text" id="dueDate" name="dueDate" placeholder="YYYY-MM-DD" required>
+            <input type="datetime-local" id="dueDate" name="dueDate">
         </div>
         <div class="form-group">
             <label for="content">내용</label>
-            <textarea id="content" name="content" rows="4" required></textarea>
+            <textarea id="content" name="content" rows="4"></textarea>
         </div>
         <div class="button-container">
             <button type="submit" class="button">카드 저장</button>
@@ -92,11 +93,41 @@
             formDataObject[key] = value;
         });
 
-        // 여기서 실제로 데이터를 처리하거나 저장하는 로직을 추가할 수 있습니다.
-        console.log('카드가 성공적으로 저장되었습니다.');
-        console.log(formDataObject);
+        // endTime을 LocalDateTime 형식에 맞게 변환
+        const endTime = formDataObject.dueDate ? new Date(formDataObject.dueDate).toISOString().slice(0, 16) : null;
+
+        const cardData = {
+            title: formDataObject.title,
+            content: formDataObject.content,
+            username: formDataObject.assignee,
+            endTime: endTime
+        };
+
+        const kanbanColumnId = 1; // 실제 칸반 컬럼 ID로 변경해야 합니다
+
+        fetch(`/api/columns/${kanbanColumnId}/cards`, {
+            method: 'POST',
+            headers: {
+                'Authorization': localStorage.getItem("Authorization"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cardData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('카드 생성에 실패했습니다.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert('카드가 성공적으로 생성되었습니다.');
+            window.location.href = 'board.html'; // 예: 보드 페이지로 이동
+        })
+        .catch(error => {
+            console.error('카드 생성 중 오류 발생:', error);
+            alert('카드 생성 중 오류가 발생했습니다.');
+        });
     });
 </script>
-
 </body>
 </html>
