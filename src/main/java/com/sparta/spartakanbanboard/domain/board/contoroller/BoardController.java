@@ -56,7 +56,7 @@ public class BoardController {
         (
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
             @RequestParam(value = "page",defaultValue = "1") int page,
-            @RequestParam("size") int size,
+            @RequestParam(value = "size",defaultValue = "3") int size,
             @RequestParam(value = "sortBy",defaultValue = "createdAt") String sortBy
             ) {
 
@@ -76,7 +76,7 @@ public class BoardController {
         (
             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
             @RequestParam(value = "page",defaultValue = "1") int page,
-            @RequestParam("size") int size,
+            @RequestParam(value = "size",defaultValue = "3") int size,
             @RequestParam(value = "sortBy",defaultValue = "createdAt") String sortBy
         ) {
         User user = userDetailsImpl.getUser();
