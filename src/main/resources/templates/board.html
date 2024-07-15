@@ -279,6 +279,7 @@
         columns.forEach(column => {
             const columnElement = document.createElement('div');
             columnElement.className = 'column';
+            columnElement.dataset.id = column.id;
             columnElement.innerHTML = `
                 <h2>${column.columnTitle}</h2>
                 <a href="createCard.html" class="button">카드 생성</a>
@@ -447,7 +448,7 @@
             column.draggable = editMode;
             column.dataset.id = columnData.id;
             column.innerHTML = `
-                    <div class="column-header">
+                    <div class="column-header" id="${columnData.id}">
                         <h2 class="column-title">${columnData.columnTitle}</h2>
                         <a href="createCard.html" class="button">카드 생성</a>
                     </div>
@@ -459,7 +460,7 @@
             column.addEventListener('drop', drop);
 
             if (editMode) {
-                column.querySelector('.column-title').outerHTML = `<input type="text" class="column-title" value="${columnData.columnTitle}">`;
+                column.querySelector('.column-title').outerHTML = `<input type="text" class="column-title" value="${columnData.columnTitle}" data-id="${columnData.id}">`;
             }
 
             const cards = column.cardResponseList;
@@ -503,7 +504,7 @@
         const columnTitles = document.querySelectorAll('.column-title');
         columnTitles.forEach((input, index) => {
             columnsData[index].columnTitle = input.value;
-            let columnId = columnsData[index].id;
+            let columnId = input.dataset.id;
 
             const putData = {
                 columnTitle: input.value
@@ -526,17 +527,6 @@
                 .catch(error => console.error('Error fetching columns:', error));
         });
 
-        // 변경된 컬럼 순서 저장
-        const columnsContainer = document.getElementById('columns-container');
-        const columns = columnsContainer.querySelectorAll('.column');
-        const newColumnsData = [];
-        columns.forEach(column => {
-            column.draggable = false;
-            const id = column.dataset.id;
-            const name = column.querySelector('.column-title').value;
-            newColumnsData.push({id: parseInt(id), columnTitle: name});
-        });
-        columnsData.splice(0, columnsData.length, ...newColumnsData);
     }
 
     // 드래그 시작 함수
