@@ -13,7 +13,7 @@ import lombok.Getter;
 public class KanbanDetailsResponseDto {
 
     private String columnTitle;
-    private Long orderNumber;
+    private Long id;
     private List<CardDetailsResponseDto> cardResponseList;
 
     public static KanbanDetailsResponseDto of(KanbanColumn kanbanColumn) {
@@ -24,7 +24,7 @@ public class KanbanDetailsResponseDto {
 
         return KanbanDetailsResponseDto.builder()
             .columnTitle(kanbanColumn.getColumnTitle())
-            .orderNumber(kanbanColumn.getOrderNumber())
+            .id(kanbanColumn.getId())
             .cardResponseList(cardDetailsResponseDtoList)
             .build();
     }

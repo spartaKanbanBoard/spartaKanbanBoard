@@ -41,6 +41,7 @@ public class KanbanColumn {
         return ColumnResponseDto.builder()
             .columnTitle(kanbanColumn.getColumnTitle())
             .orderNumber(kanbanColumn.getOrderNumber())
+            .id(kanbanColumn.id)
             .build();
     }
 

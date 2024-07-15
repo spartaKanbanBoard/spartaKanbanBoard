@@ -42,4 +42,7 @@ public class ViewController {
     public String getCheckCurrentUser() {
         return "checkCurrentUser";
     }
+
+    @GetMapping("/createColumn.html")
+    public String getCreateColumn(@RequestParam("boardId") String boardId) { return "createColumn";}
 }

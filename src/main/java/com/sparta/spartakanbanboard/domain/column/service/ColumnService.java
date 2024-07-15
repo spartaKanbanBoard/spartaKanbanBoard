@@ -101,6 +101,8 @@ public class ColumnService {
             baseColumn.setOrderNumber(targetSequence);
         }
 
+        columnRepository.saveAll(columnList);
+
         ColumnListResponseDto columnListResponseDto = new ColumnListResponseDto();
         columnListResponseDto.getColumnResponseDtoList().addAll(columnList
             .stream()
@@ -139,7 +141,7 @@ public class ColumnService {
 
         return CommonResponseDto.builder()
             .msg("전체 컬럼 조회가 성공했습니다")
-            .data(responseDtoList)
+            .data(columnListResponseDto.getColumnResponseDtoList())
             .build();
     }
 
