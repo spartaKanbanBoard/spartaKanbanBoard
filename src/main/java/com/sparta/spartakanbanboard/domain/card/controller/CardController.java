@@ -2,7 +2,6 @@ package com.sparta.spartakanbanboard.domain.card.controller;
 
 import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
 import com.sparta.spartakanbanboard.domain.card.dto.EditCardRequestDto;
-import com.sparta.spartakanbanboard.domain.card.dto.MoveLocationRequestDto;
 import com.sparta.spartakanbanboard.domain.card.entity.State;
 import com.sparta.spartakanbanboard.domain.card.service.CardServiceImpl;
 import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
@@ -63,14 +62,27 @@ public class CardController {
 		return ResponseEntity.ok().body(commonResponseDto);
 	}
 
-	@PatchMapping
-	public ResponseEntity<?> moveLocationCards(
-		@PathVariable long kanbanColumnId,
-		@RequestParam long cardId,
-		@RequestBody @Valid MoveLocationRequestDto moveLocationRequestDto
+	@PatchMapping("/{cardId}/move")
+	public ResponseEntity<?> moveLocationByColumnId(
+		@PathVariable("kanbanColumnId") long kanbanColumnId,
+		@PathVariable("cardId") long cardId,
+		@RequestParam(value = "targetColumnId") long targetColumnId,
+		@RequestParam(value = "moveSequence") int moveSequence
 	) {
-		CommonResponseDto<?> commonResponseDto = cardService.moveLocationCards(kanbanColumnId,
-			cardId, moveLocationRequestDto);
+		CommonResponseDto<?> commonResponseDto = cardService.moveLocationByColumnId(
+			kanbanColumnId, cardId, targetColumnId, moveSequence);
+
+		return ResponseEntity.ok().body(commonResponseDto);
+	}
+
+	@PatchMapping
+	public ResponseEntity<?> moveCardByColumnId(
+		@PathVariable("kanbanColumnId") long kanbanColumnId,
+		@RequestParam(value = "cardId") long cardId,
+		@RequestParam(value = "moveSequence") int moveSequence
+	) {
+		CommonResponseDto<?> commonResponseDto = cardService.moveCardByColumnId(kanbanColumnId,
+			cardId, moveSequence);
 
 		return ResponseEntity.ok().body(commonResponseDto);
 

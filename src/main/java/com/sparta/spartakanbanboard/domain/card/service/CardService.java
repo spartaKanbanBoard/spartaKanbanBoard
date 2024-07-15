@@ -2,7 +2,6 @@ package com.sparta.spartakanbanboard.domain.card.service;
 
 import com.sparta.spartakanbanboard.domain.card.dto.CreateCardRequestDto;
 import com.sparta.spartakanbanboard.domain.card.dto.EditCardRequestDto;
-import com.sparta.spartakanbanboard.domain.card.dto.MoveLocationRequestDto;
 import com.sparta.spartakanbanboard.domain.card.entity.Card;
 import com.sparta.spartakanbanboard.domain.card.entity.State;
 import com.sparta.spartakanbanboard.global.dto.CommonResponseDto;
@@ -27,9 +26,14 @@ public interface CardService {
        Long cardId, EditCardRequestDto editCardRequestDto, UserDetailsImpl userDetails
     );
 
+
     @Transactional
-    CommonResponseDto<?> moveLocationCards(Long kanbanColumnId, Long cardId,
-        MoveLocationRequestDto moveLocationRequestDto
+    CommonResponseDto<?> moveLocationByColumnId(long kanbanColumnId, long cardId,
+        long targetColumnId, int moveSequence);
+
+    @Transactional
+    CommonResponseDto<?> moveCardByColumnId(Long kanbanColumnId, Long cardId,
+        int moveSequence
     );
 
     @Transactional
