@@ -133,6 +133,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
+        let userName;
         const commentsContainer = document.querySelector('.comments');
         const cardInfoElement = document.querySelector('.card-info');
 
@@ -156,6 +157,7 @@
                 // 카드 정보와 댓글 목록 업데이트
                 cardUpdate(data.data.card);
                 commentUpdate(data.data.commentList);
+                userName= data.data.userName;
             })
             .catch(error => {
                 console.error('카드 정보를 불러오는 중 오류 발생:', error);
@@ -193,7 +195,7 @@
             if (commentContent.trim() === '') return;
 
             // 실제로 백엔드에 댓글을 저장
-            const newComment = { user: '새로운 사용자', content: commentContent };
+            const newComment = { user: userName, content: commentContent };
 
             fetch(`/api/cards/${cardId}/comments`, {
                 method: 'POST',
