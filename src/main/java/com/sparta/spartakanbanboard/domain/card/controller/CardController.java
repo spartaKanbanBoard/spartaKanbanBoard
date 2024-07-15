@@ -62,11 +62,11 @@ public class CardController {
 		return ResponseEntity.ok().body(commonResponseDto);
 	}
 
-	@PatchMapping("/{cardId}/move")
+	@PatchMapping("/{cardId}/move/{targetColumnId}")
 	public ResponseEntity<?> moveLocationByColumnId(
 		@PathVariable("kanbanColumnId") long kanbanColumnId,
 		@PathVariable("cardId") long cardId,
-		@RequestParam(value = "targetColumnId") long targetColumnId,
+		@PathVariable("targetColumnId") long targetColumnId,
 		@RequestParam(value = "moveSequence") int moveSequence
 	) {
 		CommonResponseDto<?> commonResponseDto = cardService.moveLocationByColumnId(
