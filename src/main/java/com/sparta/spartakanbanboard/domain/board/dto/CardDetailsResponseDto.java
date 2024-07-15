@@ -9,6 +9,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class CardDetailsResponseDto {
+    private Long id;
     private String username;
     private String title;
     private String content;
@@ -18,6 +19,7 @@ public class CardDetailsResponseDto {
 
     public static CardDetailsResponseDto of(Card card) {
         return CardDetailsResponseDto.builder()
+            .id(card.getId())
             .title(card.getTitle())
             .content(card.getContent())
             .username(card.getUsername())
