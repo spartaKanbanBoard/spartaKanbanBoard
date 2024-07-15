@@ -588,13 +588,26 @@
             const targetColumnId = targetElement.closest('.column').dataset.id;
 
             if (draggedElement.classList.contains('card') && targetElement.classList.contains('column')) {
-                console.log(cardId)
                 moveCardToColumn(cardId, targetColumnId, kanbanColumnId);
             } else if (draggedElement.classList.contains('column') && targetElement.classList.contains('column')) {
-                console.log(cardId)
-                moveColumn(cardId, targetId);
-            }
+                const draggedColumnId = draggedElement.dataset.id;
 
+                // 컬럼을 다른 위치로 이동하는 함수 호출
+                moveColumn(cardId, targetId);
+
+                // 컬럼의 DOM 요소 위치 변경 처리
+                const columnsContainer = document.getElementById('columns-container');
+                const draggedIndex = Array.from(columnsContainer.children).indexOf(draggedElement);
+                const droppedIndex = Array.from(columnsContainer.children).indexOf(targetElement);
+
+                if (draggedIndex < droppedIndex) {
+                    columnsContainer.insertBefore(draggedElement, targetElement.nextSibling);
+                } else {
+                    columnsContainer.insertBefore(draggedElement, targetElement);
+                }
+
+                draggedElement.style.visibility = 'visible';
+            }
             draggedElement.style.opacity = '';
         }
     }
@@ -739,8 +752,12 @@
         const targetColumnElement = document.querySelector(`.column[data-id='${targetColumnId}']`);
         const cardElements = targetColumnElement.querySelectorAll('.card');
         const moveSequence = cardElements.length + 1;
+        console.log(kanbanColumnId);
+        console.log(cardId);
+        console.log(targetColumnId);
+        console.log(moveSequence);
 
-        fetch(`/api/columns/${kanbanColumnId}/cards/${cardId}/move/${targetColumnId}/?moveSequence=${moveSequence}`, { // 수정
+        fetch(`/api/columns/${kanbanColumnId}/cards/${cardId}/move/${targetColumnId}?moveSequence=${moveSequence}`, { // 수정
             method: 'PATCH',
             headers: {
                 'Authorization': localStorage.getItem("Authorization"),
