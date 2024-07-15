@@ -752,8 +752,12 @@
         const targetColumnElement = document.querySelector(`.column[data-id='${targetColumnId}']`);
         const cardElements = targetColumnElement.querySelectorAll('.card');
         const moveSequence = cardElements.length + 1;
+        console.log(kanbanColumnId);
+        console.log(cardId);
+        console.log(targetColumnId);
+        console.log(moveSequence);
 
-        fetch(`/api/columns/${kanbanColumnId}/cards/${cardId}/move/${targetColumnId}/?moveSequence=${moveSequence}`, { // 수정
+        fetch(`/api/columns/${kanbanColumnId}/cards/${cardId}/move/${targetColumnId}?moveSequence=${moveSequence}`, { // 수정
             method: 'PATCH',
             headers: {
                 'Authorization': localStorage.getItem("Authorization"),
