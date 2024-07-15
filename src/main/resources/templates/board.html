@@ -330,6 +330,7 @@
                     <div class="card-info">내용: ${card.content}</div>
                     <div class="card-info">상태: ${card.state}</div>
                     <div class="card-info">순서: ${card.sequence}</div>
+                    <button class="view-button" onclick="window.location.href='card.html?cardId=${card.id}'">상세 보기</button>
                 `;
                     cardElement.addEventListener('dragstart', dragStart);
                     cardElement.addEventListener('dragover', dragOver);
