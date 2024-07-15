@@ -320,6 +320,7 @@
                 cards.forEach(card => {
                     const cardElement = document.createElement('div');
                     cardElement.className = 'card';
+                    cardElement.dataset.id = card.id;
                     cardElement.draggable = true;
                     cardElement.innerHTML = `
                     <div>${card.title}</div>
@@ -581,18 +582,18 @@
         event.preventDefault();
         const targetElement = event.target.closest('.card, .column');
         if (targetElement && targetElement !== draggedElement) {
-            const draggedId = draggedElement.dataset.id;
+            const cardId = draggedElement.dataset.id;
             const targetId = targetElement.dataset.id;
-            const draggedColumnId = draggedElement.closest('.column').dataset.id;
+            const kanbanColumnId = draggedElement.closest('.column').dataset.id;
             const targetColumnId = targetElement.closest('.column').dataset.id;
 
             if (draggedElement.classList.contains('card') && targetElement.classList.contains('column')) {
-                moveCardToColumn(draggedId, targetColumnId, draggedColumnId);
+                moveCardToColumn(cardId, targetColumnId, kanbanColumnId);
             } else if (draggedElement.classList.contains('column') && targetElement.classList.contains('column')) {
                 const draggedColumnId = draggedElement.dataset.id;
 
                 // 컬럼을 다른 위치로 이동하는 함수 호출
-                moveColumn(draggedColumnId, targetId);
+                moveColumn(cardId, targetId);
 
                 // 컬럼의 DOM 요소 위치 변경 처리
                 const columnsContainer = document.getElementById('columns-container');
@@ -747,12 +748,12 @@
     }
 
     // 카드 이동 함수
-    function moveCardToColumn(draggedColumnId, cardId, targetColumnId) { // 수정
+    function moveCardToColumn(cardId, targetColumnId, kanbanColumnId) { // 수정
         const targetColumnElement = document.querySelector(`.column[data-id='${targetColumnId}']`);
         const cardElements = targetColumnElement.querySelectorAll('.card');
         const moveSequence = cardElements.length + 1;
 
-        fetch(`/api/columns/${draggedColumnId}/cards/${cardId}/move`, { // 수정
+        fetch(`/api/columns/${kanbanColumnId}/cards/${cardId}/move/${targetColumnId}/?moveSequence=${moveSequence}`, { // 수정
             method: 'PATCH',
             headers: {
                 'Authorization': localStorage.getItem("Authorization"),
