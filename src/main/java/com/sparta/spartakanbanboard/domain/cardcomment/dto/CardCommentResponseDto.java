@@ -10,16 +10,19 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CardCommentResponseDto {
 
-	private final String content;
+    private final String userName;
+    private final String content;
 
-	public CardCommentResponseDto(CardComment cardComment) {
-		this.content = cardComment.getContent();
-	}
+    public CardCommentResponseDto(CardComment cardComment) {
+        this.userName = cardComment.getUser().getUserName();
+        this.content = cardComment.getContent();
+    }
 
-	public static CardCommentResponseDto of(CardComment cardComment) {
+    public static CardCommentResponseDto of(CardComment cardComment) {
 
-		return CardCommentResponseDto.builder()
-			.content(cardComment.getContent())
-			.build();
-	}
+        return CardCommentResponseDto.builder()
+                .userName(cardComment.getUser().getUserName())
+                .content(cardComment.getContent())
+                .build();
+    }
 }
