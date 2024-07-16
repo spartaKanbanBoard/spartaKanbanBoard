@@ -34,6 +34,7 @@
             text-align: center;
             margin-top: 20px;
         }
+
         .button {
             background-color: #4CAF50;
             color: white;
@@ -43,10 +44,11 @@
             text-decoration: none;
             display: inline-block;
             font-size: 1em;
-            margin-right: 10px;
+            margin-right: 20px; /* 기존 10px에서 20px로 수정 */
             cursor: pointer;
             border-radius: 4px;
         }
+
         .button:hover {
             background-color: #45a049;
         }
@@ -60,23 +62,21 @@
         <input type="text" id="columnName" name="columnName" required>
         <div class="button-container">
             <button type="submit" class="button">컬럼 생성</button>
-            <button class="button" onclick=goBack()>돌아가기</button>
+            <button type="button" class="button" onclick=goBack()>돌아가기</button>
         </div>
     </form>
 </div>
 
 
 <script>
-    // board.html?boardId=${boardId}
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const boardId = urlParams.get('boardId');
+    function goBack() {
+        window.location.href = `board.html?boardId=${boardId}`
+    }
     document.getElementById('createColumnForm').addEventListener('submit', function(event) {
         event.preventDefault();
-        // 실제로 컬럼을 생성하는 로직을 추가해야 합니다.
-        // 이 부분에 컬럼 생성을 위한 JavaScript 코드를 작성할 수 있습니다.
-        // 예를 들어, 입력된 컬럼 이름을 가져와서 새로운 컬럼을 생성하는 등의 작업이 필요합니다.
-        // AJAX 요청 보내기
-        const urlParams = new URLSearchParams(window.location.search);
-        const boardId = urlParams.get('boardId');
 
         let inputColumnName = document.getElementById('columnName').value;
         let accessToken = localStorage.getItem("Authorization");
