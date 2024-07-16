@@ -55,9 +55,6 @@ public class BoardControllerConcurrencyTest {
     @Autowired
     private WebApplicationContext context;
 
-    @MockBean
-    private BoardService boardService;
-
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
