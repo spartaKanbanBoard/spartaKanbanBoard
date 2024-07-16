@@ -15,7 +15,7 @@
 - DB: MySQL 8.0.37, Redis
 - Front : Html, Css, JavaScript
 - Framework : SpringBoot 3.3.1
-- 인증/인가 방식 : JWT
+- 인증/인가 방식 : JWT, Spring security
 
 # 👉팀원 소개 & 역할 분담
 <details>
@@ -42,7 +42,7 @@
   김형석
 </summary>
   <br>
-   - 카드 관련 기능 <br>
+   - 카드, 댓 관련 기능 <br>
    - 카드 페이지, 카드 생성 페이지, 카드 순서 변경 기능 프론트 연결
 </details>
 <details>
@@ -132,4 +132,44 @@
 # 📈ERD 다이어그램
 ![image](https://github.com/user-attachments/assets/c520f8f9-b9da-4aed-a68b-3332e4e90fc8)
 
+# POSTMAN 
+https://documenter.getpostman.com/view/36493338/2sA3kPqQFH
+
 # 🔊트러블 슈팅
+<details>
+    <summary>${\textsf{\color{red}컬럼 순서 변경 문제}}$</summary>
+<details>
+<summary>
+   버그 발생 상황 😱
+</summary>
+  <br>
+   • 컬럼 수정 시에 이름변경만 했을 경우엔 제대로 작동<br>
+   • 컬럼 드래그 앤 드롭 시 제대로 작동<br>
+   • 🚬순서 변경 완료 후 수정 완료 버튼을 눌렀을 시 순서가 다시 배치되는 문제 발생<br><br>
+  
+</details>
+
+<details>
+<summary>
+  예상되는 오류 이유 🤔
+</summary>
+   <br>
+  • 백엔드 로직의 오류?<br>
+  • 프론트의 수정 완료 버튼 로직에서 불필요한 순서변경이 추가로 발생? <br>
+</details>
+<details>
+<summary>
+  오류 발생 원인 ❓
+</summary>
+   <br>
+  • 🔎프론트엔드에서 "컬럼 수정" 버튼을 누르면 컬럼의 순서를 변경하고 이름을 수정할 수 있습니다. 그러나 이름을 수정하지 않고 순서만 변경해도 기존 코드에서는 컬럼의 ID를 인덱스 기반으로 가져오게 되어 컬럼의 이름이 변경된 것으로 잘못 인식하는 문제가 있었습니다. <br>
+  • 😡예시의 상황으로 1번 2번 3번 4번의 컬럼이 있었을 때 4번의 컬럼을 1번 위치로 옮기고 수정 완료 버튼을 누르면 1번 인덱스의 컬럼이 4로 이름이 변경된 것으로 인식 <br>
+</details>
+<details>
+<summary>
+  문제 해결 🪄
+</summary>
+   <br> 
+  • 컬럼의 Id 값을 인덱스 기반으로 가져오는 것이 아닌 고유한 값을 가져오도록 코드 변경<br>
+</details>
+</details>
